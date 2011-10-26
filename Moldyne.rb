@@ -13,20 +13,21 @@ class CrimsonMd
     @outFileName = ""
     @temperature = 1.0
     @initialTimestep = 0
-    @maxTimestep = 1000
+    @maxTimestep = 0
     parseArgs()
     @system = MDSystem.new(@structureFileName,@temperature)
   end
 
   # Parse commandline arguments
   def parseArgs()
-    if ARGV.length != 2
+    if ARGV.length != 3
       printUsage
       exit
     end
-    
-    @structureFileName = ARGV[0]
-    @outFileName = ARGV[1]
+
+    @maxTimestep = ARGV[0].to_i
+    @structureFileName = ARGV[1]
+    @outFileName = ARGV[2]
     
   end    
 
@@ -34,8 +35,9 @@ class CrimsonMd
   def printUsage
     
     print "usage -- main.rb <structureFile> <outFile>\n"
+    print "  <numTimesteps>   - total number of timesteps to run\n"
     print "  <structureFile>  - the PDB file to read in\n"
-    print "  <outFile> - MD output\n"
+    print "  <outFilePrefix>  - MD output (.out, .xyz)\n"
     
   end
       
@@ -45,21 +47,29 @@ class CrimsonMd
   def main
     #structureFile = "test1.pdb"
     
-    outFile = File.open(@outFileName,"w")
+    outFile = File.open(@outFileName + ".out","w")
     outFile.print "Setup\n"
     outFile.print "  pos: " + @system.getPositions()
     outFile.print "  vel: " + @system.getVelocities()
     
+    xyzFile = File.open(@outFileName + ".xyz","w")
+    xyzFile.print @system.numAtoms.to_s + "\n\n"
+    xyzFile.print @system.getXyz()
+    
     @initialTimestep.upto(@maxTimestep).each do |timestep|
       outFile.print "Timestep: #{timestep}\n"
+      xyzFile.print "\n\n"
       print "Timestep: #{timestep}\n"
       @system.computeForces
       @system.integrate
       outFile.print @system.getSystemStats()
       outFile.print "  pos: " + @system.getPositions()
       outFile.print "  vel: " + @system.getVelocities()
+      xyzFile.print @system.getXyz()
+
     end
     outFile.close
+    xyzFile.close
   end
   
 end

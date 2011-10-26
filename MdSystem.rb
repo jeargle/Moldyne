@@ -27,6 +27,11 @@ class MDSystem
     setVelocities
   end
 
+  # @return Number of atoms in the simulation
+  def numAtoms
+    return @positions.length
+  end
+
   # @return Number of lines in the file
   def getNumPositions
     structureFile = File.open(@structureFilename)
@@ -122,7 +127,7 @@ class MDSystem
     0.upto(@positions.length-1) do |i|
       newPos = @newPositions[i].times(2).minus(@positions[i]).plus(@forces[i].times(@timestep**2))
       @velocities[i] = newPos.minus(@positions[i]).times(1.0/(2*@timestep))
-      #newPos = newPos.elementMod(@box)
+      newPos = newPos.elementMod(@box)
       sumVelocities = sumVelocities.plus(@velocities[i])
       sumVelSquared += @velocities[i].dot(@velocities[i])
       @positions[i] = @newPositions[i]
@@ -155,6 +160,15 @@ class MDSystem
     i = @positions.length-1
       posString += "#{i}: (" + "%.3f" % @newPositions[i].x + "," + "%.3f" % @newPositions[i].y + ")\n"
     return posString
+  end
+
+  # Return string for all atoms in xyz trajectory format.
+  def getXyz
+    xyzString = ""
+    0.upto(@positions.length-1) do |i|
+      xyzString += "#{i} " + "%.3f" % @newPositions[i].x + " " + "%.3f" % @newPositions[i].y + " 0.0\n"
+    end
+    return xyzString
   end
 
   #
