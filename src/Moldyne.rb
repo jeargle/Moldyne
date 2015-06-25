@@ -1,9 +1,10 @@
 #! /usr/bin/ruby
 
-# John Eargle
-# October 2010, May 2011
+# Author:: John Eargle (mailto: jeargle at gmail.com)
+# 2010-2011
+# :title: CrimsonMd
 
-require 'MdSystem'
+require_relative 'MdSystem'
 
 # 
 class CrimsonMd

@@ -1,9 +1,11 @@
 #! /usr/bin/ruby
 
-# John Eargle
-# May 2011
+# Author:: John Eargle (mailto: jeargle at gmail.com)
+# 2011-2015
+# :title: test
 
-require 'Coord2d'
+
+require_relative '../src/Coord2d'
 
 # 
 def computeForces(coord1, coord2, box)

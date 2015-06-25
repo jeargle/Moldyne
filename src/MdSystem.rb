@@ -1,8 +1,8 @@
-# MDSystem
-# John Eargle
+# Author:: John Eargle (mailto: jeargle at gmail.com)
 # October 2010, May 2011
+# :title: MDSystem
 
-require 'Coord2d'
+require_relative 'Coord2d'
 
 
 #

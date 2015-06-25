@@ -1,6 +1,6 @@
-# Coord2d
-# John Eargle
+# Author:: John Eargle (mailto: jeargle at gmail.com)
 # May 2011
+# :title: Vector
 
 
 class Vector < Array
