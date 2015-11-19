@@ -1,13 +1,13 @@
 #! /usr/bin/ruby
 
 # Author:: John Eargle (mailto: jeargle at gmail.com)
-# 2010-2011
-# :title: CrimsonMd
+# 2010-2015
+# :title: Moldyne
 
 require_relative 'MdSystem'
 
 # 
-class CrimsonMd
+class Moldyne
 
   def initialize()
     @structureFileName = ""
@@ -29,25 +29,20 @@ class CrimsonMd
     @maxTimestep = ARGV[0].to_i
     @structureFileName = ARGV[1]
     @outFileName = ARGV[2]
-    
   end    
 
   # Print command-line usage information
   def printUsage
-    
     print "usage -- main.rb <structureFile> <outFile>\n"
     print "  <numTimesteps>   - total number of timesteps to run\n"
     print "  <structureFile>  - the PDB file to read in\n"
-    print "  <outFilePrefix>  - MD output (.out, .xyz)\n"
-    
+    print "  <outFilePrefix>  - prefix for two output files (.out, .xyz)\n"
   end
       
   ########
   # MAIN #
   ########
   def main
-    #structureFile = "test1.pdb"
-    
     outFile = File.open(@outFileName + ".out","w")
     outFile.print "Setup\n"
     outFile.print "  pos: " + @system.getPositions()
@@ -77,5 +72,5 @@ end
 
 
 
-cmd = CrimsonMd.new()
+cmd = Moldyne.new()
 cmd.main

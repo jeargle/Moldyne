@@ -1,8 +1,9 @@
 # Author:: John Eargle (mailto: jeargle at gmail.com)
-# October 2010, May 2011
+# 2010-2015
 # :title: MDSystem
 
 require_relative 'Coord2d'
+require_relative 'Coord3d'
 
 
 #
@@ -32,6 +33,7 @@ class MDSystem
     return @positions.length
   end
 
+  # 
   # @return Number of lines in the file
   def getNumPositions
     structureFile = File.open(@structureFilename)
@@ -43,7 +45,6 @@ class MDSystem
     return numLines
   end
 
-  
   #
   def setPositions
     #0.upto(@newPositions.length-1).each do |i|
@@ -57,7 +58,6 @@ class MDSystem
       numLines += 1
     end
     structureFile.close
-    
   end
 
   # 
@@ -120,7 +120,7 @@ class MDSystem
   end
 
 
-  # 
+  # Time integration of MD system.
   def integrate
     sumVelocities = Coord2d.new(0.0,0.0)
     sumVelSquared = 0.0
@@ -136,10 +136,9 @@ class MDSystem
     # K = 0.5 * m * v**2
     @kineticEnergy = 0.5 * sumVelSquared
     @temperature = @kineticEnergy / (2*@positions.length)
-    
   end
 
-  # 
+  # Get statistics for the current state.
   def getSystemStats
     stats = ""
     stats += "  PE: " + "%.3f" % @energy + ", "
@@ -151,7 +150,7 @@ class MDSystem
     return stats
   end
 
-  #
+  # Get positions for all atoms.
   def getPositions
     posString = ""
     0.upto(@positions.length-2) do |i|
@@ -171,7 +170,7 @@ class MDSystem
     return xyzString
   end
 
-  #
+  # Get velocities for all atoms.
   def getVelocities
     velString = ""
     0.upto(@velocities.length-2) do |i|

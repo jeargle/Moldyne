@@ -1,8 +1,8 @@
 # Author:: John Eargle (mailto: jeargle at gmail.com)
-# May 2011
+# 2011-2015
 # :title: Coord2d
 
-# 
+# 2D coordinates
 class Coord2d
 
   attr_reader :x, :y
