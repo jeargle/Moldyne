@@ -13,10 +13,11 @@ class Moldyne
     @structureFileName = ""
     @outFileName = ""
     @temperature = 1.0
+    @dimension = 2
     @initialTimestep = 0
     @maxTimestep = 0
     parseArgs()
-    @system = MDSystem.new(@structureFileName,@temperature)
+    @system = MDSystem.new(@structureFileName, @temperature, @dimension)
   end
 
   # Parse commandline arguments
