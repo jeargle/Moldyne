@@ -34,7 +34,7 @@ class Moldyne
 
   # Print command-line usage information
   def printUsage
-    print "usage -- main.rb <structureFile> <outFile>\n"
+    print "usage -- Moldyne.rb <numTimesteps> <structureFile> <outFile>\n"
     print "  <numTimesteps>   - total number of timesteps to run\n"
     print "  <structureFile>  - the PDB file to read in\n"
     print "  <outFilePrefix>  - prefix for two output files (.out, .xyz)\n"

@@ -38,7 +38,7 @@ class MDSystem
     return @positions.length
   end
 
-  # 
+  # Get number of atomic positions defined in @structureFile
   # @return Number of lines in the file
   def getNumPositions
     structureFile = File.open(@structureFilename)
@@ -55,15 +55,13 @@ class MDSystem
     structureFile = File.open(@structureFilename)
     numLines = 0
     structureFile.each_line do |line|
+      c1 = line[31,7].to_f
+      c2 = line[39,7].to_f
       if @dimension == 2
-        match = /^(\d+\.\d+), (\d+\.\d+)/.match(line)
-        @newPositions[numLines] = Coord2d.new(match[1].to_f,
-                                              match[2].to_f)
+        @newPositions[numLines] = Coord2d.new(c1, c2)
       elsif @dimension == 3
-        match = /^(.+), (.+), (.+)/.match(line)
-        @newPositions[numLines] = Coord3d.new(match[1].to_f,
-                                              match[2].to_f,
-                                              match[3].to_f)
+        c3 = line[47,7].to_f
+        @newPositions[numLines] = Coord3d.new(c1, c2, c3)
       end
       numLines += 1
     end
