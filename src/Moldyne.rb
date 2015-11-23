@@ -12,8 +12,9 @@ class Moldyne
   def initialize()
     @structureFileName = ""
     @outFileName = ""
+    @outSkip = 10
     @temperature = 1.0
-    @dimension = 2
+    @dimension = 3
     @initialTimestep = 0
     @maxTimestep = 0
     parseArgs()
@@ -44,27 +45,31 @@ class Moldyne
   # MAIN #
   ########
   def main
-    outFile = File.open(@outFileName + ".out","w")
+    outFile = File.open(@outFileName + ".out", "w")
     outFile.print "Setup\n"
     outFile.print "  pos: " + @system.getPositions()
     outFile.print "  vel: " + @system.getVelocities()
     
-    xyzFile = File.open(@outFileName + ".xyz","w")
+    xyzFile = File.open(@outFileName + ".xyz", "w")
     xyzFile.print @system.numAtoms.to_s + "\n\n"
     xyzFile.print @system.getXyz()
     
     @initialTimestep.upto(@maxTimestep).each do |timestep|
-      outFile.print "Timestep: #{timestep}\n"
-      xyzFile.print "\n\n"
-      print "Timestep: #{timestep}\n"
       @system.computeForces
       @system.integrate
-      outFile.print @system.getSystemStats()
-      outFile.print "  pos: " + @system.getPositions()
-      outFile.print "  vel: " + @system.getVelocities()
-      xyzFile.print @system.getXyz()
 
+      # Only print for every @outSkip-th step.
+      if timestep % @outSkip == 0 then
+        print "Timestep: #{timestep}\n"
+        outFile.print "Timestep: #{timestep}\n"
+        outFile.print @system.getSystemStats()
+        # outFile.print "  pos: " + @system.getPositions()
+        # outFile.print "  vel: " + @system.getVelocities()
+        xyzFile.print "\n\n"
+        xyzFile.print @system.getXyz()
+      end
     end
+
     outFile.close
     xyzFile.close
   end

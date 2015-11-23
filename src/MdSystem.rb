@@ -22,13 +22,16 @@ class MDSystem
     @energy = 0.0
     @kineticEnergy = 0.0
     @timestep = 0.01
+
     if @dimension == 2
       @box = Coord2d.new(20.0, 20.0)
     elsif @dimension == 3
       @box = Coord3d.new(20.0, 20.0, 20.0)
     end
+
     @cutoff = 14.0
     @cutoffEnergy = 4 * (1.0 / @cutoff**12 - 1.0 / @cutoff**6)
+
     setPositions
     setVelocities
   end
@@ -43,9 +46,11 @@ class MDSystem
   def getNumPositions
     structureFile = File.open(@structureFilename)
     numLines = 0
+
     structureFile.each_line do
       numLines += 1
     end
+
     structureFile.close
     return numLines
   end
@@ -54,27 +59,32 @@ class MDSystem
   def setPositions
     structureFile = File.open(@structureFilename)
     numLines = 0
+
     structureFile.each_line do |line|
       c1 = line[31,7].to_f
       c2 = line[39,7].to_f
+
       if @dimension == 2
         @newPositions[numLines] = Coord2d.new(c1, c2)
       elsif @dimension == 3
         c3 = line[47,7].to_f
         @newPositions[numLines] = Coord3d.new(c1, c2, c3)
       end
+
       numLines += 1
     end
+
     structureFile.close
   end
 
-  # 
+  # Set initial velocities to random values.
   def setVelocities
     if @dimension == 2
       sumVelocities = Coord2d.new(0.0, 0.0)
     elsif @dimension == 3
       sumVelocities = Coord3d.new(0.0, 0.0, 0.0)
     end
+
     sumVelocitiesSquared = 0
     0.upto(@velocities.length-1).each do |i|
       if @dimension == 2
@@ -89,16 +99,18 @@ class MDSystem
     
     # Velocity center of mass
     sumVelocities = sumVelocities.times(1.0/@positions.length)
+
     # Kinetic energy
     sumVelocitiesSquared /= @positions.length
     scaleFactor = Math.sqrt((2*@temperature)/sumVelocitiesSquared)
+
     0.upto(@velocities.length-1).each do |i|
       @velocities[i] = @velocities[i].minus(sumVelocities).times(scaleFactor)
       @positions[i] = @newPositions[i].minus((@velocities[i]).times(@timestep))
     end
   end
   
-  # 
+  # Compute all pairwise atomic forces for the current system state.
   def computeForces
     #puts ">computeForces"
     @energy = 0.0
@@ -116,6 +128,7 @@ class MDSystem
 	separation = @newPositions[i].minus(@newPositions[j])
 	# Periodic boundary condition
 	boxImage = separation.elementDivide(@box)
+
         if @dimension == 2
 	  boxImage = Coord2d.new(boxImage.x.round,
                                  boxImage.y.round)
@@ -124,18 +137,18 @@ class MDSystem
                                  boxImage.y.round,
                                  boxImage.z.round)
         end
+
 	separation = separation.minus(@box.elementTimes(boxImage))
 	sepLength = separation.length
 	#puts "(#{i},#{j}) sepLength: #{sepLength}"
-	sepSquared = separation.dot(separation)
+
 	if sepLength < @cutoff then
+	  sepSquared = separation.dot(separation)
 	  sep2i = 1.0 / sepSquared
 	  sep6i = sep2i ** 3.0
 	  force = 48 * sep2i * sep6i * (sep6i-0.5)
 	  #force = 48 * sep6i * (sep2i-0.5)
 	  #puts "force: #{force}"
-	  #@forces[i] = @forces[i].plus(separation.times(force))
-	  #@forces[j] = @forces[j].minus(separation.times(force))
 	  @forces[i] = @forces[i].plus(separation.times(force))
 	  @forces[j] = @forces[j].minus(separation.times(force))
 	  @energy += 4 * sep6i * (sep6i - 1.0) - @cutoffEnergy
@@ -150,12 +163,14 @@ class MDSystem
 
   # Time integration of MD system.
   def integrate
-      if @dimension == 2
-        sumVelocities = Coord2d.new(0.0, 0.0)
-      elsif @dimension == 3
-        sumVelocities = Coord3d.new(0.0, 0.0, 0.0)
-      end
+    if @dimension == 2
+      sumVelocities = Coord2d.new(0.0, 0.0)
+    elsif @dimension == 3
+      sumVelocities = Coord3d.new(0.0, 0.0, 0.0)
+    end
+    
     sumVelSquared = 0.0
+    
     0.upto(@positions.length-1) do |i|
       newPos = @newPositions[i].times(2).minus(@positions[i]).plus(@forces[i].times(@timestep**2))
       @velocities[i] = newPos.minus(@positions[i]).times(1.0/(2*@timestep))
@@ -165,6 +180,7 @@ class MDSystem
       @positions[i] = @newPositions[i]
       @newPositions[i] = newPos
     end
+    
     # K = 0.5 * m * v**2
     @kineticEnergy = 0.5 * sumVelSquared
     @temperature = @kineticEnergy / (2*@positions.length)
@@ -172,8 +188,8 @@ class MDSystem
 
   # Get statistics for the current state.
   def getSystemStats
-    stats = ""
-    stats += "  PE: " + "%.3f" % @energy + ", "
+    stats = "  "
+    stats += "PE: " + "%.3f" % @energy + ", "
     stats += "KE: " + "%.3f" % @kineticEnergy + ", "
     stats += "TOTAL: " + "%.3f" % (@energy + @kineticEnergy) + ", "
     particleEnergy = (@energy + @kineticEnergy) / @positions.length
@@ -191,6 +207,7 @@ class MDSystem
         posString += "#{i}: (" + "%.3f" % @newPositions[i].x + "," +
                      "%.3f" % @newPositions[i].y + "), "
       end
+      
       i = @positions.length-1
       posString += "#{i}: (" + "%.3f" % @newPositions[i].x + "," +
                    "%.3f" % @newPositions[i].y + ")\n"
@@ -200,11 +217,13 @@ class MDSystem
                      "%.3f" % @newPositions[i].y + "," +
                      "%.3f" % @newPositions[i].z + "), "        
       end
+      
       i = @positions.length-1
       posString += "#{i}: (" + "%.3f" % @newPositions[i].x + "," +
                    "%.3f" % @newPositions[i].y + "," +
                    "%.3f" % @newPositions[i].z + ")\n"
     end
+    
     return posString
   end
 
@@ -223,6 +242,7 @@ class MDSystem
                      "%.3f" % @newPositions[i].z + "\n"
       end
     end
+    
     return xyzString
   end
 
@@ -234,6 +254,7 @@ class MDSystem
         velString += "#{i}: (" + "%.3f" % @velocities[i].x + "," +
                      "%.3f" % @velocities[i].y + "), "
       end
+      
       i = @velocities.length-1
       velString += "#{i}: (" + "%.3f" % @velocities[i].x + "," +
                    "%.3f" % @velocities[i].y + ")\n"
@@ -243,6 +264,7 @@ class MDSystem
                      "%.3f" % @velocities[i].y + "," +
                      "%.3f" % @velocities[i].z + "), "
       end
+      
       i = @velocities.length-1
       velString += "#{i}: (" + "%.3f" % @velocities[i].x + "," +
                    "%.3f" % @velocities[i].y + "," +
