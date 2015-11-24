@@ -10,15 +10,15 @@ require_relative 'MdSystem'
 class Moldyne
 
   def initialize()
-    @structureFileName = ""
-    @outFileName = ""
+    @structureFilename = ""
+    @outFilename = ""
     @outSkip = 10
     @temperature = 1.0
     @dimension = 3
     @initialTimestep = 0
     @maxTimestep = 0
     parseArgs()
-    @system = MDSystem.new(@structureFileName, @temperature, @dimension)
+    @system = MDSystem.new(@structureFilename, @temperature, @dimension)
   end
 
   # Parse commandline arguments
@@ -29,8 +29,8 @@ class Moldyne
     end
 
     @maxTimestep = ARGV[0].to_i
-    @structureFileName = ARGV[1]
-    @outFileName = ARGV[2]
+    @structureFilename = ARGV[1]
+    @outFilename = ARGV[2]
   end    
 
   # Print command-line usage information
@@ -45,12 +45,12 @@ class Moldyne
   # MAIN #
   ########
   def main
-    outFile = File.open(@outFileName + ".out", "w")
+    outFile = File.open(@outFilename + ".out", "w")
     outFile.print "Setup\n"
     outFile.print "  pos: " + @system.getPositions()
     outFile.print "  vel: " + @system.getVelocities()
     
-    xyzFile = File.open(@outFileName + ".xyz", "w")
+    xyzFile = File.open(@outFilename + ".xyz", "w")
     xyzFile.print @system.numAtoms.to_s + "\n\n"
     xyzFile.print @system.getXyz()
     

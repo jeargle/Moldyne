@@ -15,6 +15,7 @@ class Structure
     numPositions = getNumPositions
     @positions = Array.new(numPositions)
     setPositions
+  end
 
   # @return Number of atoms in the simulation
   def numAtoms
@@ -24,23 +25,20 @@ class Structure
   # Get number of atomic positions defined in @structureFile
   # @return Number of lines in the file
   def getNumPositions
-    structureFile = File.open(@structureFilename)
     numLines = 0
 
-    structureFile.each_line do
+    File.readlines(@structureFilename).each do |line|
       numLines += 1
     end
 
-    structureFile.close
     return numLines
   end
 
   # Read PDB file and extract atomic positions.
   def setPositions
-    structureFile = File.open(@structureFilename)
     numLines = 0
 
-    structureFile.each_line do |line|
+    File.readlines(@structureFilename).each do |line|
       c1 = line[31,7].to_f
       c2 = line[39,7].to_f
 
@@ -54,5 +52,6 @@ class Structure
       numLines += 1
     end
 
-    structureFile.close
   end
+
+end

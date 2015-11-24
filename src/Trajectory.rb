@@ -10,10 +10,27 @@ require_relative 'Structure'
 class Trajectory
 
   # 
-  def initialize(structureFilename, trajectoryFilename, dimension)
-    @structureFilename = structureFilename
+  def initialize(structure, trajectoryFilename, dimension)
+    @structure = structure
     @trajectoryFilename = trajectoryFilename
     @dimension = dimension
+  end
 
-
+  # Read trajectory file and extract atomic positions for each frame.
+  def readXyzFile
+    numLines = 0
     
+    trajectoryFile = File.open(@trajectoryFilename, "r")
+    numAtoms = Integer(trajectoryFile.readline)
+    if numAtoms != @structure.numAtoms then
+      puts "Error: atom count mismatch"
+    end
+    
+    trajectoryFile.each_line do |line|
+      puts line
+    end
+    trajectoryFile.close
+    
+  end
+      
+end
