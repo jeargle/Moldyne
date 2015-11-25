@@ -8,6 +8,8 @@ require_relative 'Coord3d'
 # Molecular structure including atomic positions and pairwise bonds.
 class Structure
 
+  attr_reader :positions
+
   # 
   def initialize(structureFilename, dimension)
     @structureFilename = structureFilename

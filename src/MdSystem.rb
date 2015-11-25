@@ -4,19 +4,23 @@
 
 require_relative 'Coord2d'
 require_relative 'Coord3d'
+require_relative 'Structure'
 
 
 #
 class MDSystem
 
   # 
-  def initialize(structureFilename, temperature, dimension)
-    @structureFilename = structureFilename
+  def initialize(structure, temperature, dimension)
+    # @structureFilename = structureFilename
+    @structure = structure
     @temperature = temperature
     @dimension = dimension
-    numPositions = getNumPositions
+    # @positions = @structure.positions
+    @newPositions = @structure.positions
+    numPositions = @newPositions.length
     @positions = Array.new(numPositions)
-    @newPositions = Array.new(numPositions)
+    # @newPositions = Array.new(numPositions)
     @velocities = Array.new(numPositions)
     @forces = Array.new(numPositions)
     @energy = 0.0
@@ -32,7 +36,7 @@ class MDSystem
     @cutoff = 14.0
     @cutoffEnergy = 4 * (1.0 / @cutoff**12 - 1.0 / @cutoff**6)
 
-    setPositions
+    # setPositions
     setVelocities
   end
 
@@ -43,35 +47,35 @@ class MDSystem
 
   # Get number of atomic positions defined in @structureFile
   # @return Number of lines in the file
-  def getNumPositions
-    numLines = 0
+  # def getNumPositions
+  #   numLines = 0
 
-    File.readlines(@structureFilename).each do |line|
-      numLines += 1
-    end
+  #   File.readlines(@structureFilename).each do |line|
+  #     numLines += 1
+  #   end
 
-    return numLines
-  end
+  #   return numLines
+  # end
 
   # Read PDB file and extract atomic positions.
-  def setPositions
-    numLines = 0
+  # def setPositions
+  #   numLines = 0
 
-    File.readlines(@structureFilename).each do |line|
-      c1 = line[31,7].to_f
-      c2 = line[39,7].to_f
+  #   File.readlines(@structureFilename).each do |line|
+  #     c1 = line[31,7].to_f
+  #     c2 = line[39,7].to_f
 
-      if @dimension == 2
-        @newPositions[numLines] = Coord2d.new(c1, c2)
-      elsif @dimension == 3
-        c3 = line[47,7].to_f
-        @newPositions[numLines] = Coord3d.new(c1, c2, c3)
-      end
+  #     if @dimension == 2
+  #       @newPositions[numLines] = Coord2d.new(c1, c2)
+  #     elsif @dimension == 3
+  #       c3 = line[47,7].to_f
+  #       @newPositions[numLines] = Coord3d.new(c1, c2, c3)
+  #     end
 
-      numLines += 1
-    end
+  #     numLines += 1
+  #   end
 
-  end
+  # end
 
   # Set initial velocities to random values.
   def setVelocities

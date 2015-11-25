@@ -5,6 +5,7 @@
 # :title: Moldyne
 
 require_relative 'MdSystem'
+require_relative 'Structure'
 
 # 
 class Moldyne
@@ -18,7 +19,9 @@ class Moldyne
     @initialTimestep = 0
     @maxTimestep = 0
     parseArgs()
-    @system = MDSystem.new(@structureFilename, @temperature, @dimension)
+    @structure = Structure.new(@structureFilename, @dimension)
+    # @system = MDSystem.new(@structureFilename, @temperature, @dimension)
+    @system = MDSystem.new(@structure, @temperature, @dimension)
   end
 
   # Parse commandline arguments
