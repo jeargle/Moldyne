@@ -37,3 +37,16 @@ def markov_pi_all_data(N, delta):
             data_sum += 4.0
             data_sum_sq += 4.0 ** 2
     return data_sum / float(N), data_sum_sq / float(N)
+
+def markov_pi_all_data2(N, delta):
+    x, y = 1.0, 1.0
+    data = []
+    for i in range(N):
+        del_x, del_y = random.uniform(-delta, delta), random.uniform(-delta, delta)
+        if abs(x + del_x) < 1.0 and abs(y + del_y) < 1.0:
+            x, y = x + del_x, y + del_y
+        if x ** 2 + y ** 2 < 1.0:
+            data.append(4.0)
+        else:
+            data.append(0.0)
+    return data
