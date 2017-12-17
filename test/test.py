@@ -5,10 +5,7 @@
 from __future__ import print_function
 
 import numpy as np
-import matplotlib.pyplot as plt
 import pylab
-from scipy.integrate import simps, quad, nquad
-from scipy.optimize import minimize
 
 import moldyne.moldyne as md
 
@@ -72,6 +69,22 @@ def markov_pi_test2():
     pylab.show()
 
 
+def markov_pi_test3():
+    """
+    """
+    n_trials = 2 ** 14
+    delta = 0.1
+    n_parties = 100
+    inside_error_bar = 0
+    for iteration in range(n_parties):
+        mean, mean_square = md.markov_pi_all_data(n_trials, delta)
+        naive_error = np.sqrt(mean_square  - mean ** 2) / np.sqrt(n_trials)
+        error =  abs(mean - np.pi)
+        if error < naive_error: inside_error_bar += 1
+        print(mean, error, naive_error)
+    print(inside_error_bar / float(n_parties), 'fraction: error bar including pi')
+
+
 
 if __name__=='__main__':
 
@@ -83,5 +96,6 @@ if __name__=='__main__':
     # Markov Pi tests
     # ====================
 
-    markov_pi_test1()
-    markov_pi_test2()
+    # markov_pi_test1()
+    # markov_pi_test2()
+    markov_pi_test3()
