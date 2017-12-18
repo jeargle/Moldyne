@@ -123,6 +123,28 @@ def markov_pi_test4():
     pylab.show()
 
 
+def disk_test1():
+    """
+    Test direct placement of 4 disks in a box.
+    """
+    N = 4
+    sigma = 0.1196
+    # n_runs = 1000000
+    n_runs = 100000
+    histo_data = []
+    for run in range(n_runs):
+        pos = md.direct_disks_box(N, sigma)
+        for k in range(N): histo_data.append(pos[k][0])
+
+    pylab.hist(histo_data, bins=100, normed=True)
+    pylab.xlabel('x')
+    pylab.ylabel('frequency')
+    pylab.title('x-coordinates for 1e6 runs of direct_disks_box\nwith 4 disks of radius 0.1196')
+    pylab.grid()
+    #pylab.savefig('direct_disks_histo.png')
+    pylab.show()
+
+
 
 if __name__=='__main__':
 
@@ -137,4 +159,10 @@ if __name__=='__main__':
     # markov_pi_test1()
     # markov_pi_test2()
     # markov_pi_test3()
-    markov_pi_test4()
+    # markov_pi_test4()
+
+    # ====================
+    # Disk placement tests
+    # ====================
+
+    disk_test1()
