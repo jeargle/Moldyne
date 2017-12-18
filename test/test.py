@@ -145,6 +145,35 @@ def disk_test1():
     pylab.show()
 
 
+def disk_test2():
+    """
+    Test markov placement of 1 disk in a box with 4 existing disks.
+    """
+    L = [[0.25, 0.25], [0.75, 0.25], [0.25, 0.75], [0.75, 0.75]]
+    sigma = 0.1196
+    delta = 0.18   # 0.5 acceptance ratio
+
+    # n_steps = 2000000
+    n_steps = 20000
+    accept_count = 0
+    histo_data = []
+    for steps in range(n_steps):
+        acc = md.markov_disks_box(L, sigma, delta)
+        if acc:
+            accept_count += 1
+        for k in L: histo_data.append(k[0])
+
+    print('  acceptance ratio: %f' % (1.0*accept_count/n_steps))
+
+    pylab.hist(histo_data, bins=100, normed=True)
+    pylab.xlabel('x')
+    pylab.ylabel('frequency')
+    pylab.title('x-coordinates for 2e6 runs of markov_disks_box\nwith 4 disks of radius 0.1196 and $\delta$=0.18')
+    pylab.grid()
+    pylab.savefig('markov_disks_histo.png')
+    pylab.show()
+
+
 
 if __name__=='__main__':
 
@@ -165,4 +194,5 @@ if __name__=='__main__':
     # Disk placement tests
     # ====================
 
-    disk_test1()
+    # disk_test1()
+    disk_test2()

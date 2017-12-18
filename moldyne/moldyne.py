@@ -73,3 +73,24 @@ def direct_disks_box(N, sigma):
                 overlap = False
                 L.append(a)
     return L
+
+def markov_disks_box(L, sigma, delta):
+    """
+    Place one disk in a box with existing disks.  The placement
+    is a jump from one of the existing disks.
+    L: array of existing disk locations
+    sigma: disk radius
+    delta: max jump distance
+    """
+    sigma_sq = sigma**2
+    accepted = False
+    a = random.choice(L)
+    b = [a[0] + random.uniform(-delta, delta), a[1] + random.uniform(-delta, delta)]
+    min_dist = min((b[0] - c[0]) ** 2 + (b[1] - c[1]) ** 2 for c in L if c != a)
+    box_cond = min(b[0], b[1]) < sigma or max(b[0], b[1]) > 1.0 - sigma
+
+    if not (box_cond or min_dist < 4.0 * sigma_sq):
+        a[:] = b
+        accepted = True
+
+    return accepted
