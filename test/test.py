@@ -170,7 +170,66 @@ def disk_test2():
     pylab.ylabel('frequency')
     pylab.title('x-coordinates for 2e6 runs of markov_disks_box\nwith 4 disks of radius 0.1196 and $\delta$=0.18')
     pylab.grid()
-    pylab.savefig('markov_disks_histo.png')
+    # pylab.savefig('markov_disks_histo.png')
+    pylab.show()
+
+
+def disk_test3():
+    """
+    Molecular dynamics of four disks in a box.
+    """
+    pos = [[0.25, 0.25],
+           [0.75, 0.25],
+           [0.25, 0.75],
+           [0.75, 0.75]]
+    vel = [[0.21, 0.12],
+           [0.71, 0.18],
+           [-0.23, -0.79],
+           [0.78, 0.1177]]
+    singles = [(0, 0), (0, 1), (1, 0), (1, 1), (2, 0), (2, 1), (3, 0), (3, 1)]
+    pairs = [(0, 1), (0, 2), (0, 3), (1, 2), (1, 3), (2, 3)]
+    sigma = 0.1196
+    sigma_sq = sigma**2
+    t = 0.0
+    n_events = 200000
+    histo_data = []
+
+    for event in range(n_events):
+        wall_times = [md.wall_time(pos[k][l], vel[k][l], sigma)
+                      for k, l  in singles]
+        pair_times = [md.pair_time(pos[k], vel[k], pos[l], vel[l], sigma, sigma_sq)
+                      for k, l in pairs]
+        next_event = min(wall_times + pair_times)
+        t += next_event
+        for k, l in singles:
+            pos[k][l] += vel[k][l] * next_event
+
+        if min(wall_times) < min(pair_times):
+            collision_disk, direction = singles[wall_times.index(next_event)]
+            vel[collision_disk][direction] *= -1.0
+        else:
+            a, b = pairs[pair_times.index(next_event)]
+            del_x = [pos[b][0] - pos[a][0], pos[b][1] - pos[a][1]]
+            abs_x = np.sqrt(del_x[0] ** 2 + del_x[1] ** 2)
+            e_perp = [c / abs_x for c in del_x]
+            del_v = [vel[b][0] - vel[a][0], vel[b][1] - vel[a][1]]
+            scal = del_v[0] * e_perp[0] + del_v[1] * e_perp[1]
+            for k in range(2):
+                vel[a][k] += e_perp[k] * scal
+                vel[b][k] -= e_perp[k] * scal
+
+        print('event', event)
+        print('time', t)
+        # print('pos', pos)
+        # print('vel', vel)
+        for k in pos: histo_data.append(k[0])
+
+    pylab.hist(histo_data, bins=100, normed=True)
+    pylab.xlabel('x')
+    pylab.ylabel('frequency')
+    pylab.title('x-coordinates for 2e5 events of event_disks_box\nwith 4 disks of radius 0.1196')
+    pylab.grid()
+    # pylab.savefig('event_disks_histo.png')
     pylab.show()
 
 
@@ -195,4 +254,5 @@ if __name__=='__main__':
     # ====================
 
     # disk_test1()
-    disk_test2()
+    # disk_test2()
+    disk_test3()

@@ -27,6 +27,8 @@ def markov_pi(N, delta):
     return n_hits, n_accepts
 
 def markov_pi_all_data(N, delta):
+    """
+    """
     x, y = 1.0, 1.0
     data_sum = 0.0
     data_sum_sq = 0.0
@@ -94,3 +96,32 @@ def markov_disks_box(L, sigma, delta):
         accepted = True
 
     return accepted
+
+def wall_time(pos_a, vel_a, sigma):
+    """
+    Determine amount of time before disk motion in 1D hits a wall.
+    """
+    if vel_a > 0.0:
+        del_t = (1.0 - sigma - pos_a) / vel_a
+    elif vel_a < 0.0:
+        del_t = (pos_a - sigma) / abs(vel_a)
+    else:
+        del_t = float('inf')
+    return del_t
+
+def pair_time(pos_a, vel_a, pos_b, vel_b, sigma, sigma_sq):
+    """
+    Determine amount of time disk motions in 2D cause a pair of disks
+    to hit each other.
+    """
+    del_x = [pos_b[0] - pos_a[0], pos_b[1] - pos_a[1]]
+    del_x_sq = del_x[0]**2 + del_x[1]**2
+    del_v = [vel_b[0] - vel_a[0], vel_b[1] - vel_a[1]]
+    del_v_sq = del_v[0]**2 + del_v[1]**2
+    scal = del_v[0] * del_x[0] + del_v[1] * del_x[1]
+    Upsilon = scal**2 - del_v_sq * (del_x_sq - 4.0 * sigma_sq)
+    if Upsilon > 0.0 and scal < 0.0:
+        del_t = - (scal + np.sqrt(Upsilon)) / del_v_sq
+    else:
+        del_t = float('inf')
+    return del_t
