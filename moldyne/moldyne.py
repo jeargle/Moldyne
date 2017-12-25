@@ -119,9 +119,9 @@ def pair_time(pos_a, vel_a, pos_b, vel_b, sigma, sigma_sq):
     del_v = [vel_b[0] - vel_a[0], vel_b[1] - vel_a[1]]
     del_v_sq = del_v[0]**2 + del_v[1]**2
     scal = del_v[0] * del_x[0] + del_v[1] * del_x[1]
-    Upsilon = scal**2 - del_v_sq * (del_x_sq - 4.0 * sigma_sq)
-    if Upsilon > 0.0 and scal < 0.0:
-        del_t = - (scal + np.sqrt(Upsilon)) / del_v_sq
+    upsilon = scal**2 - del_v_sq * (del_x_sq - 4.0 * sigma_sq)
+    if upsilon > 0.0 and scal < 0.0:
+        del_t = - (scal + np.sqrt(upsilon)) / del_v_sq
     else:
         del_t = float('inf')
     return del_t
