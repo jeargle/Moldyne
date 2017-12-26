@@ -359,6 +359,54 @@ def disk_test5():
     pylab.show()
 
 
+def disk_test6():
+    """
+    Markov simulation of four disks in a box.
+    """
+    # detailed balance (global balance)
+    # irreducible
+    # aperiodic
+    accepts = 0
+    attempts = 0
+    N = 4
+    sigma = 0.1
+    # n_runs = 1000000
+    n_runs = 100000
+    conf_a = [(0.25, 0.25),
+              (0.25, 0.75),
+              (0.75, 0.25),
+              (0.75,0.75)]
+    conf_b = [(0.20, 0.20),
+              (0.20, 0.80),
+              (0.75, 0.25),
+              (0.75,0.75)]
+    conf_c = [(0.30, 0.20),
+              (0.30, 0.80),
+              (0.70, 0.20),
+              (0.70,0.70)]
+    hits = [0, 0, 0]
+    Total = 0
+    del_xy = 0.1
+    configuration = [conf_a, conf_b, conf_c]
+    for run in range(n_runs):
+        print('run', run)
+        at, ac, x_vec = md.direct_disks_box2(N, sigma)
+        attempts += at
+        accepts += ac
+        for c in range(3):
+            cond = True
+            for b in configuration[c]:
+                cond_b = min( max( abs(a[0] - b[0]), abs(a[1] - b[1]) ) for a in x_vec)  < del_xy
+                cond *= cond_b
+            if cond: hits[c] += 1
+
+    for c in range(3):
+        print(hits[c] / float(n_runs), 'proportion of confs in eight-dimensional volume element.')
+
+    print('acceptance ratio:', 1.0*accepts/attempts)
+
+
+
 
 if __name__=='__main__':
 
@@ -383,4 +431,5 @@ if __name__=='__main__':
     # disk_test2()
     # disk_test3()
     # disk_test4()
-    disk_test5()
+    # disk_test5()
+    disk_test6()

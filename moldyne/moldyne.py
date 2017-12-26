@@ -76,6 +76,25 @@ def direct_disks_box(N, sigma):
                 L.append(a)
     return L
 
+def direct_disks_box2(N, sigma):
+    condition = False
+    att = 0
+    acc = 0
+    while condition == False:
+        L = [(random.uniform(sigma, 1.0 - sigma), random.uniform(sigma, 1.0 - sigma))]
+        for k in range(1, N):
+            att += 1
+            a = (random.uniform(sigma, 1.0 - sigma), random.uniform(sigma, 1.0 - sigma))
+            min_dist = min(np.sqrt((a[0] - b[0])**2 + (a[1] - b[1])**2) for b in L)
+            if min_dist < 2.0 * sigma:
+                condition = False
+                break
+            else:
+                L.append(a)
+                acc += 1
+                condition = True
+    return att, acc, L
+
 def markov_disks_box(L, sigma, delta):
     """
     Place one disk in a box with existing disks.  The placement
@@ -88,7 +107,7 @@ def markov_disks_box(L, sigma, delta):
     accepted = False
     a = random.choice(L)
     b = [a[0] + random.uniform(-delta, delta), a[1] + random.uniform(-delta, delta)]
-    min_dist = min((b[0] - c[0]) ** 2 + (b[1] - c[1]) ** 2 for c in L if c != a)
+    min_dist = min((b[0] - c[0])**2 + (b[1] - c[1])**2 for c in L if c != a)
     box_cond = min(b[0], b[1]) < sigma or max(b[0], b[1]) > 1.0 - sigma
 
     if not (box_cond or min_dist < 4.0 * sigma_sq):
