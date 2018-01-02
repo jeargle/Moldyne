@@ -4,6 +4,7 @@
 import random
 
 import numpy as np
+import pylab
 
 
 __all__ = ["markov_pi", "markov_pi_all_data", "markov_pi_all_data2",
@@ -144,3 +145,24 @@ def pair_time(pos_a, vel_a, pos_b, vel_b, sigma, sigma_sq):
     else:
         del_t = float('inf')
     return del_t
+
+
+# ====================
+# Plotting
+# ====================
+
+def show_conf(L, sigma, title, fname=None):
+    """
+    """
+    pylab.axes()
+    for [x, y] in L:
+        for ix in range(-1, 2):
+            for iy in range(-1, 2):
+                cir = pylab.Circle((x + ix, y + iy), radius = sigma,  fc = 'r')
+                pylab.gca().add_patch(cir)
+    pylab.axis('scaled')
+    pylab.title(title)
+    pylab.axis([0.0, 1.0, 0.0, 1.0])
+    if fname is not None:
+        pylab.savefig(fname)
+    pylab.show()

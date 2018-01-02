@@ -406,6 +406,13 @@ def disk_test6():
     print('acceptance ratio:', 1.0*accepts/attempts)
 
 
+def plot_test1():
+    """
+    """
+    L = [[0.9, 0.9]]
+    sigma = 0.4
+    # md.show_conf(L, sigma, 'test graph', 'one_disk.png')
+    md.show_conf(L, sigma, 'test graph')
 
 
 if __name__=='__main__':
@@ -432,4 +439,10 @@ if __name__=='__main__':
     # disk_test3()
     # disk_test4()
     # disk_test5()
-    disk_test6()
+    # disk_test6()
+
+    # ====================
+    # Plot tests
+    # ====================
+
+    plot_test1()
