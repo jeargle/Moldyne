@@ -409,6 +409,36 @@ def disk_test6():
     print('acceptance ratio:', 1.0*accepts/attempts)
 
 
+def disk_test7():
+    L = [[0.25, 0.25], [0.75, 0.25], [0.25, 0.75], [0.75, 0.75]]
+    sigma = 0.15
+    sigma_sq = sigma**2
+    delta = 0.1
+    n_steps = 1000
+    accept = 0
+    reject = 0
+
+    for step in range(n_steps):
+        print('step %d' % (step))
+        a = random.choice(L)
+        b = [(a[0] + random.uniform(-delta, delta)) % 1.0,
+             (a[1] + random.uniform(-delta, delta)) % 1.0]
+        min_dist = min(md.disk_dist(b, c) for c in L if c != a)
+        print(' ', min_dist)
+        if not (min_dist < 2.0 * sigma):
+            a[:] = b
+            accept += 1
+            print('  accept')
+            print(L)
+        else:
+            reject += 1
+            print('  reject')
+
+    print('Acceptance ratio:', float(accept)/n_steps)
+    # md.show_conf(L, sigma, 'test graph', 'four_disks_b2.png')
+    md.show_conf(L, sigma, 'test graph')
+
+
 def plot_test1():
     """
     Draw a disk.
@@ -447,6 +477,7 @@ def file_io_test1():
     f.close()
 
 
+
 if __name__=='__main__':
 
     print('*********************')
@@ -472,6 +503,7 @@ if __name__=='__main__':
     # disk_test4()
     # disk_test5()
     # disk_test6()
+    disk_test7()
 
     # ====================
     # Plot tests
@@ -483,4 +515,4 @@ if __name__=='__main__':
     # File IO tests
     # ====================
 
-    file_io_test1()
+    # file_io_test1()

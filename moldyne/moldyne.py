@@ -147,6 +147,19 @@ def pair_time(pos_a, vel_a, pos_b, vel_b, sigma, sigma_sq):
     return del_t
 
 
+def disk_dist(x, y):
+    """
+    Distance between two disks in a 1x1 square with periodic boundary
+    conditions.
+    """
+    d_x = abs(x[0] - y[0]) % 1.0
+    d_x = min(d_x, 1.0 - d_x)
+    d_y = abs(x[1] - y[1]) % 1.0
+    d_y = min(d_y, 1.0 - d_y)
+
+    return  np.sqrt(d_x**2 + d_y**2)
+
+
 # ====================
 # Plotting
 # ====================
