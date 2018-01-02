@@ -4,6 +4,9 @@
 
 from __future__ import print_function
 
+import os
+import random
+
 import numpy as np
 import pylab
 
@@ -408,11 +411,40 @@ def disk_test6():
 
 def plot_test1():
     """
+    Draw a disk.
     """
     L = [[0.9, 0.9]]
     sigma = 0.4
     # md.show_conf(L, sigma, 'test graph', 'one_disk.png')
     md.show_conf(L, sigma, 'test graph')
+
+
+def file_io_test1():
+    """
+    Read and print 2D coordinates from an existing file or write 3
+    random 2D coordinates to a new file.
+    """
+    filename = 'disk_configuration.txt'
+
+    if os.path.isfile(filename):
+        f = open(filename, 'r')
+        L = []
+        for line in f:
+            a, b = line.split()
+            L.append([float(a), float(b)])
+        f.close()
+        print('starting from file', filename)
+    else:
+        L = []
+        for k in range(3):
+            L.append([random.uniform(0.0, 1.0), random.uniform(0.0, 1.0)])
+        print('starting from scratch')
+
+    L[0][0] = 3.3
+    f = open(filename, 'w')
+    for a in L:
+       f.write(str(a[0]) + ' ' + str(a[1]) + '\n')
+    f.close()
 
 
 if __name__=='__main__':
@@ -445,4 +477,10 @@ if __name__=='__main__':
     # Plot tests
     # ====================
 
-    plot_test1()
+    # plot_test1()
+
+    # ====================
+    # File IO tests
+    # ====================
+
+    file_io_test1()
