@@ -410,13 +410,40 @@ def disk_test6():
 
 
 def disk_test7():
-    L = [[0.25, 0.25], [0.75, 0.25], [0.25, 0.75], [0.75, 0.75]]
-    sigma = 0.15
+    """
+    Markov simulation of N disks in a box.
+    First time, place N disks in a lattice.
+    Afterwards, start from a restart file with coords for all disks.
+    """
+
+    filename = 'disk_conf.txt'
+    eta = 0.72
+    # N = 256
+    N = 25
+
+    k = int(np.sqrt(N) + 0.5)
+    k_offset = 1.0/k
+    sigma = np.sqrt(eta/np.pi)/k
     sigma_sq = sigma**2
-    delta = 0.1
+    delta = 0.5 * sigma
     n_steps = 1000
     accept = 0
     reject = 0
+
+    if os.path.isfile(filename):
+        f = open(filename, 'r')
+        L = []
+        for line in f:
+            a, b = line.split()
+            L.append([float(a), float(b)])
+        f.close()
+        print('starting from file', filename)
+    else:
+        L = []
+        for x in range(k):
+            for y in range(k):
+                L.append([k_offset/2.0 + k_offset*x, k_offset/2.0 + k_offset*y])
+        print('starting from scratch')
 
     for step in range(n_steps):
         print('step %d' % (step))
@@ -429,14 +456,24 @@ def disk_test7():
             a[:] = b
             accept += 1
             print('  accept')
-            print(L)
+            # print(L)
         else:
             reject += 1
-            print('  reject')
+            # print('  reject')
 
     print('Acceptance ratio:', float(accept)/n_steps)
+
+    f = open(filename, 'w')
+    for a in L:
+       f.write(str(a[0]) + ' ' + str(a[1]) + '\n')
+    f.close()
+
+    print('sigma:', sigma)
+
     # md.show_conf(L, sigma, 'test graph', 'four_disks_b2.png')
-    md.show_conf(L, sigma, 'test graph')
+    # md.show_conf(L, sigma, 'test graph')
+    # show_conf(L, sigma, 'N=%d, $\eta$=%.2f' % (N, eta), 'N_disks_b3.png')
+    md.show_conf(L, sigma, 'N=%d, $\eta$=%.2f' % (N, eta))
 
 
 def plot_test1():
