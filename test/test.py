@@ -417,20 +417,24 @@ def disk_test7():
     """
 
     filename = 'disk_conf.txt'
-    eta = 0.72
+    # eta = 0.72
     # N = 256
-    N = 25
+    eta = 0.42
+    N = 64
 
     k = int(np.sqrt(N) + 0.5)
     k_offset = 1.0/k
-    sigma = np.sqrt(eta/np.pi)/k
+    sigma = np.sqrt(eta/np.pi)/k  # radius
     sigma_sq = sigma**2
-    delta = 0.5 * sigma
+    # delta = 0.5 * sigma
+    delta = 0.1 * sigma
     n_steps = 1000
     accept = 0
     reject = 0
 
+    # Set locations
     if os.path.isfile(filename):
+        # from input file
         f = open(filename, 'r')
         L = []
         for line in f:
@@ -439,6 +443,7 @@ def disk_test7():
         f.close()
         print('starting from file', filename)
     else:
+        # place on lattice
         L = []
         for x in range(k):
             for y in range(k):
