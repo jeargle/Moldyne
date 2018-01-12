@@ -160,6 +160,12 @@ def disk_dist(x, y):
     return  np.sqrt(d_x**2 + d_y**2)
 
 
+def phi6(phi):
+    return (sum([np.exp(6.0j * ( phi + (x * np.pi/3.0)))
+                 for x in range(6)])
+            / 6.0)
+
+
 # ====================
 # Plotting
 # ====================

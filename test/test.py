@@ -519,6 +519,18 @@ def file_io_test1():
     f.close()
 
 
+def phi_test1():
+    a = md.phi6(0.0)
+    b = md.phi6(np.pi/6.0)
+    c = md.phi6(np.pi/12.0)
+
+    print(a)
+    print(b)
+    print(c)
+    print(a+b)
+
+
+
 
 if __name__=='__main__':
 
@@ -545,7 +557,7 @@ if __name__=='__main__':
     # disk_test4()
     # disk_test5()
     # disk_test6()
-    disk_test7()
+    # disk_test7()
 
     # ====================
     # Plot tests
@@ -558,3 +570,9 @@ if __name__=='__main__':
     # ====================
 
     # file_io_test1()
+
+    # ====================
+    # Phi tests
+    # ====================
+
+    phi_test1()
