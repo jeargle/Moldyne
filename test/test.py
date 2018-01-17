@@ -535,6 +535,24 @@ def volume_test1():
         print(dimension, md.sphere_volume(dimension))
 
 
+def volume_test2():
+    dimensions = range(1,201)
+    volumes = []
+    for dimension in dimensions:
+        vol = md.sphere_volume(dimension)
+        volumes.append(vol)
+        print(dimension, vol)
+
+    pylab.plot(dimensions, volumes, '.')
+    # pylab.gca().set_xscale('log')
+    pylab.gca().set_yscale('log')
+    pylab.xlabel('d (dimensions)')
+    pylab.ylabel('volume')
+    pylab.title('Hypersphere volume (unit radius) in d dimensions')
+    # pylab.savefig('a2.png')
+    pylab.show()
+
+
 
 
 if __name__=='__main__':
@@ -587,3 +605,4 @@ if __name__=='__main__':
     # ====================
 
     volume_test1()
+    volume_test2()
