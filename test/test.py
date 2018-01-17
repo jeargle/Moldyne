@@ -530,6 +530,11 @@ def phi_test1():
     print(a+b)
 
 
+def volume_test1():
+    for dimension in range(1,20):
+        print(dimension, md.sphere_volume(dimension))
+
+
 
 
 if __name__=='__main__':
@@ -575,4 +580,10 @@ if __name__=='__main__':
     # Phi tests
     # ====================
 
-    phi_test1()
+    # phi_test1()
+
+    # ====================
+    # Volume tests
+    # ====================
+
+    volume_test1()

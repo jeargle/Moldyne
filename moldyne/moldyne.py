@@ -5,6 +5,8 @@ import random
 
 import numpy as np
 import pylab
+import scipy as sp
+from scipy.special import gamma
 
 
 __all__ = ["markov_pi", "markov_pi_all_data", "markov_pi_all_data2",
@@ -164,6 +166,14 @@ def phi6(phi):
     return (sum([np.exp(6.0j * ( phi + (x * np.pi/3.0)))
                  for x in range(6)])
             / 6.0)
+
+
+def sphere_volume(dimension):
+    """
+    Volume of N-dimensional sphere.
+    """
+    return np.pi**(dimension / 2.0) / gamma(dimension / 2.0 + 1.0)
+
 
 
 # ====================
