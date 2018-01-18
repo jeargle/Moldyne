@@ -553,6 +553,21 @@ def volume_test2():
     pylab.show()
 
 
+def volume_test3():
+    n_trials = 1000000
+
+    print('---------------------------------------------------------')
+    print('n_trials=%d used for all' % (n_trials))
+    print('d | estimation of volume(d) | volume(d) (exact) | n_hits')
+    print('---------------------------------------------------------')
+
+    for d in range(1, 13):
+        n_hits = md.direct_pi(n_trials, d)
+        est_vol = 2.0**d * n_hits / float(n_trials)
+        exact_vol = md.sphere_volume(d)
+        print('%2d  %1.4f                    %1.4f              %7d' % (d, est_vol, exact_vol, n_hits))
+
+
 
 
 if __name__=='__main__':
@@ -604,5 +619,6 @@ if __name__=='__main__':
     # Volume tests
     # ====================
 
-    volume_test1()
+    # volume_test1()
     volume_test2()
+    volume_test3()

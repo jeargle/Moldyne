@@ -175,6 +175,23 @@ def sphere_volume(dimension):
     return np.pi**(dimension / 2.0) / gamma(dimension / 2.0 + 1.0)
 
 
+def direct_pi(N, dimension):
+    """
+    Direct randomized calculation of PI.
+    """
+    n_hits = 0
+    for i in range(N):
+        x_len = 0.0
+        for j in range(dimension):
+            x = random.uniform(-1.0, 1.0)
+            x_len += x**2
+            if x_len > 1.0:
+                break
+        if x_len <= 1.0:
+            n_hits += 1
+    return n_hits
+
+
 
 # ====================
 # Plotting
