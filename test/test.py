@@ -531,11 +531,15 @@ def phi_test1():
 
 
 def volume_test1():
+    """
+    """
     for dimension in range(1,20):
         print(dimension, md.sphere_volume(dimension))
 
 
 def volume_test2():
+    """
+    """
     dimensions = range(1,201)
     volumes = []
     for dimension in dimensions:
@@ -554,6 +558,8 @@ def volume_test2():
 
 
 def volume_test3():
+    """
+    """
     n_trials = 1000000
 
     print('---------------------------------------------------------')
@@ -566,6 +572,31 @@ def volume_test3():
         est_vol = 2.0**d * n_hits / float(n_trials)
         exact_vol = md.sphere_volume(d)
         print('%2d  %1.4f                    %1.4f              %7d' % (d, est_vol, exact_vol, n_hits))
+
+
+def volume_test4():
+    """
+    Markov chain sampling of sphere volume for different
+    dimensionalities.
+    """
+    n_trials = 10000
+
+    # print 2.0**d * n_hits / float(n_trials)
+    print('Average distance from origin to sample')
+
+    for dim in range(1,11):
+        # print sum(r_sqs)
+        # print n_trials
+        r_sqs = md.sample_sphere(n_trials, dim)
+        print(dim, sum(r_sqs)/n_trials)
+
+    # pylab.plot([i[0] for i in points], [i[1] for i in points], '.')
+    # pylab.axis([-1.5, 1.5, -1.5, 1.5])
+    # pylab.xlabel('x')
+    # pylab.ylabel('y')
+    # pylab.title('Markov chain')
+    # # # pylab.savefig('a2.png')
+    # pylab.show()
 
 
 
@@ -620,5 +651,6 @@ if __name__=='__main__':
     # ====================
 
     # volume_test1()
-    volume_test2()
-    volume_test3()
+    # volume_test2()
+    # volume_test3()
+    volume_test4()

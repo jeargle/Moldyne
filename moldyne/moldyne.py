@@ -175,6 +175,32 @@ def sphere_volume(dimension):
     return np.pi**(dimension / 2.0) / gamma(dimension / 2.0 + 1.0)
 
 
+def sample_sphere(n_trials, d):
+    """
+    Markov chain sampling of sphere volume.
+    Each trial adjusts value of one dimension chosen at random.
+    n_trials : number of trials
+    d: sphere dimension
+    """
+    x = [0] * d
+    r_sqs = []
+    for i in range(n_trials):
+        k = random.randint(0, d - 1)
+        x_new_k = x[k] + random.uniform(-1.0, 1.0)
+        # Sum of squares including x_new_k
+        r_sq = sum([j**2 for j in x]) - x[k]**2 + x_new_k**2
+        if np.sqrt(r_sq) < 1.0:
+            x[k] = x_new_k
+            # n_hits += 1
+        else:
+            # Sum of squares without x_new_k
+            r_sq = r_sq + x[k]**2 - x_new_k**2
+        r_sqs.append(r_sq)
+        # points.append(x[:])
+
+    return r_sqs
+
+
 def direct_pi(N, dimension):
     """
     Direct randomized calculation of PI.
