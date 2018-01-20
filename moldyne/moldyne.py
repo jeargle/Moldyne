@@ -191,7 +191,8 @@ def sample_sphere(n_trials, d):
         # Sum of squares including x_new_k
         r_sq_new = r_sq - x[k]**2 + x_new_k**2
         # Accept move if point is within unit sphere.
-        if np.sqrt(r_sq_new) < 1.0:
+        # sqrt not needed since radius bound is 1.0
+        if r_sq_new < 1.0:
             x[k] = x_new_k
             r_sqs.append(r_sq_new)
             # n_hits += 1
@@ -203,28 +204,37 @@ def sample_sphere(n_trials, d):
 
 
 def sample_cylinder(n_trials, d):
+    """
+    Markov sampling of sphere within a cylinder.  Moves are accepted
+    if they lie within the cylinder and counted towards the sphere
+    volume calculation if they also lie within the sphere.  Dimension
+    d represents cylinder height.
+    n_trials : number of Markov trials
+    d : dimension of hypercylinder
+    """
     x = [0] * (d+1)
-    n_Q = 0
+    n_hits = 0
     r_sqs = []
     for i in range(n_trials):
+        r_sq = sum([j**2 for j in x])
         k = random.randint(0, d - 1)
         x_new_k = x[k] + random.uniform(-1.0, 1.0)
         x_supp = random.uniform(-1.0, 1.0)
-        # Sum of squares including x_new_k
-        r_sq = sum([j**2 for j in x]) - x[k]**2 + x_new_k**2 - x[d]**2
-        if np.sqrt(r_sq) < 1.0:
+        # Sum of squares including x_new_k but not x[d], the height
+        # dimension.
+        r_sq_new = r_sq - x[k]**2 + x_new_k**2 - x[d]**2
+        # Check that position is within cylinder.
+        if np.sqrt(r_sq_new) < 1.0:
             x[k] = x_new_k
             x[d] = x_supp
-        # else:
-        #     # Sum of squares without x_new_k
-        #     r_sq = r_sq + x[k]**2 - x_new_k**2
-        r_sqC = sum([j**2 for j in x])
-        if r_sqC < 1.0:
-            n_Q += 1
+            r_sq = r_sq_new + x[d]**2
+        # Check that cylinder position is within sphere.
+        if r_sq < 1.0:
+            n_hits += 1
         # r_sqs.append(r_sq)
         # points.append(x[:])
 
-    return n_Q
+    return n_hits
 
 
 def direct_pi(N, dimension):
