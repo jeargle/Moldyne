@@ -202,6 +202,31 @@ def sample_sphere(n_trials, d):
     return r_sqs
 
 
+def sample_cylinder(n_trials, d):
+    x = [0] * (d+1)
+    n_Q = 0
+    r_sqs = []
+    for i in range(n_trials):
+        k = random.randint(0, d - 1)
+        x_new_k = x[k] + random.uniform(-1.0, 1.0)
+        x_supp = random.uniform(-1.0, 1.0)
+        # Sum of squares including x_new_k
+        r_sq = sum([j**2 for j in x]) - x[k]**2 + x_new_k**2 - x[d]**2
+        if np.sqrt(r_sq) < 1.0:
+            x[k] = x_new_k
+            x[d] = x_supp
+        # else:
+        #     # Sum of squares without x_new_k
+        #     r_sq = r_sq + x[k]**2 - x_new_k**2
+        r_sqC = sum([j**2 for j in x])
+        if r_sqC < 1.0:
+            n_Q += 1
+        # r_sqs.append(r_sq)
+        # points.append(x[:])
+
+    return n_Q
+
+
 def direct_pi(N, dimension):
     """
     Direct randomized calculation of PI.
