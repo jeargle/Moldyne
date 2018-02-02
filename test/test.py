@@ -655,6 +655,35 @@ def volume_test6():
                md.sphere_volume(dim+1)/md.sphere_volume(dim)))
 
 
+def volume_test7():
+    """
+    """
+    n_trials = 100000
+    Qs = []
+    dims = range(1,201)
+    volume1 = md.sphere_volume(1)
+    volumes = [volume1]
+
+    for dim in dims:
+        Q = md.sample_cylinder(n_trials, dim)
+        Qs.append(Q)
+        # print('d: %d, 2*<Q> = %f, md.sphere_volume(%d)/md.sphere_volume(%d) = %f' %
+        #       (dim, 2.0*n_Q/n_trials, dim+1, dim,
+        #        md.sphere_volume(dim+1)/md.sphere_volume(dim)))
+        volumes.append(2.0*Q/n_trials*volumes[len(volumes)-1])
+        exact_vol = md.sphere_volume(dim)
+        print(dim, volumes[dim-1], exact_vol)
+
+    pylab.plot(dims, volumes[0:len(dims)], '.')
+    # pylab.gca().set_xscale('log')
+    pylab.gca().set_yscale('log')
+    pylab.xlabel('d (dimensions)')
+    pylab.ylabel('volume')
+    pylab.title('Hypersphere volume (unit radius) in d dimensions')
+    # pylab.savefig('c2.png')
+    pylab.show()
+
+
 
 
 if __name__=='__main__':
@@ -711,4 +740,5 @@ if __name__=='__main__':
     # volume_test3()
     # volume_test4()
     # volume_test5()
-    volume_test6()
+    # volume_test6()
+    volume_test7()
