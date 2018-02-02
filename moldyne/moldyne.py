@@ -203,7 +203,7 @@ def sample_sphere(n_trials, d):
     return r_sqs
 
 
-def sample_cylinder(n_trials, d):
+def sample_cylinder_old(n_trials, d):
     """
     Markov sampling of sphere within a cylinder.  Moves are accepted
     if they lie within the cylinder and counted towards the sphere
@@ -233,6 +233,43 @@ def sample_cylinder(n_trials, d):
             n_hits += 1
         # r_sqs.append(r_sq)
         # points.append(x[:])
+
+    return n_hits
+
+
+def sample_cylinder(n_trials, d):
+    """
+    Markov sampling of sphere within a cylinder.  Moves are accepted
+    if they lie within the cylinder and counted towards the sphere
+    volume calculation if they also lie within the sphere.  Dimension
+    d represents cylinder height.
+    n_trials : number of Markov trials
+    d : dimension of hypercylinder
+    """
+    x = [0] * (d+1)
+    n_hits = 0
+    r_sq = 0.0
+    r_sq_new = 0.0
+    r_sqC = 0.0
+    for i in range(n_trials):
+        # if i%100 == 0:
+        #     r_sq2 = sum([j**2 for j in x[:-1]])
+        #     print('|%f - %f| = %f' % (r_sq, r_sq2, abs(r_sq-r_sq2)))
+        k = random.randint(0, d - 1)
+        x_new_k = x[k] + random.uniform(-1.0, 1.0)
+        x_supp = random.uniform(-1.0, 1.0)
+
+        # Sum of squares including x_new_k
+        r_sq_new = r_sq - x[k]**2 + x_new_k**2
+        if np.sqrt(r_sq_new) < 1.0:
+            x[k] = x_new_k
+            x[d] = x_supp
+            r_sq = r_sq_new
+
+        # Sum of squares including the cylinder x_supp term
+        r_sqC = r_sq + x[d]**2
+        if r_sqC < 1.0:
+            n_hits += 1
 
     return n_hits
 

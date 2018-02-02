@@ -612,7 +612,7 @@ def volume_test5():
     for dim in range(1,11):
         # print sum(r_sqs)
         # print n_trials
-        n_hits = md.sample_cylinder(n_trials, dim)
+        n_hits = md.sample_cylinder_old(n_trials, dim)
         # Q: n_hits
         print('d: %d, 2*<Q> = %f, sphere_volume(%d)/sphere_volume(%d) = %f' %
               (dim, 2.0*n_hits/n_trials, dim+1, dim,
@@ -625,6 +625,34 @@ def volume_test5():
     # pylab.title('Markov chain')
     # # pylab.savefig('a2.png')
     # pylab.show()
+
+
+def volume_test6():
+    """
+    Markov chain sampling of cylinder volume for different
+    dimensionalities compared to sphere volume of
+    dimension+1/dimension.
+
+    Like volume_test5(), but with minor tweak to sample_cylinder().
+
+    using sample_cylinder_old():
+        d: 200, 2*<Q> = 0.177938, Vol1_s(201)/Vol1_s(200) = 0.176584
+        real	1m39.104s
+        user	1m36.139s
+        sys	0m0.744s
+    using sample_cylinder():
+        d: 200, 2*<Q> = 0.180696, Vol1_s(201)/Vol1_s(200) = 0.176584
+        real	0m14.283s
+        user	0m13.362s
+        sys	0m0.413s
+    """
+    n_trials = 1000000
+    for dim in range(200,201):
+        # n_Q = md.sample_cylinder_old(n_trials, dim)
+        n_Q = md.sample_cylinder(n_trials, dim)
+        print('d: %d, 2*<Q> = %f, Vol1_s(%d)/Vol1_s(%d) = %f' %
+              (dim, 2.0*n_Q/n_trials, dim+1, dim,
+               md.sphere_volume(dim+1)/md.sphere_volume(dim)))
 
 
 
@@ -682,4 +710,5 @@ if __name__=='__main__':
     # volume_test2()
     # volume_test3()
     # volume_test4()
-    volume_test5()
+    # volume_test5()
+    volume_test6()
