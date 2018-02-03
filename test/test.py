@@ -657,6 +657,7 @@ def volume_test6():
 
 def volume_test7():
     """
+    Graph hypersphere volume as function of number of dimensions.
     """
     n_trials = 100000
     Qs = []
@@ -682,6 +683,57 @@ def volume_test7():
     pylab.title('Hypersphere volume (unit radius) in d dimensions')
     # pylab.savefig('c2.png')
     pylab.show()
+
+
+def volume_test8():
+    """
+    Print table of errors for sphere volume calculation by number of
+    Markov chain trials (increasing exponentially).
+    """
+    n_tries = 20
+    n_trials = [1, 10, 100, 1000, 10000, 100000]
+    # n_trials = [1, 10, 100, 1000]
+    dims = range(1,21)
+    volume1 = md.sphere_volume(1)
+    vol20 = md.sphere_volume(20)
+
+    print('-------------------------------------------------------------------------------')
+    print(' n_trials | <sphere_volume(20)> |   Error   | sphere_volume(20) (exact result) ')
+    print('-------------------------------------------------------------------------------')
+
+    for n_trial in n_trials:
+        volume20s = []
+        for t in range(n_tries):
+            Qs = []
+            volumes = [volume1]
+            for dim in dims:
+                Q = md.sample_cylinder(n_trial, dim)
+                Qs.append(Q)
+                # print('d: %d, 2*<Q> = %f, sphere_volume(%d)/sphere_volume(%d) = %f' %
+                #       (dim, 2.0*n_Q/n_trials, dim+1, dim,
+                #        md.sphere_volume(dim+1)/md.sphere_volume(dim)))
+                volumes.append(2.0*Q/n_trial*volumes[len(volumes)-1])
+                exact_vol = md.sphere_volume(dim)
+                # print(dim, volumes[dim-1], exact_vol)
+            volume20s.append(volumes[19])
+        # print('length volume20s', len(volume20s))
+        mean_vol = sum(volume20s)/20
+        mean_vol_sq = sum([i**2 for i in volume20s])/20.0
+        vol_mean_sq = ((sum(volume20s)**2)/20.0)**2.0
+        # print(mean_vol_sq, vol_mean_sq)
+        err = np.sqrt(abs(mean_vol_sq - vol_mean_sq))/np.sqrt(20.0)
+        # print('n_trials: %d' % (n_trial))
+        # print('mean volume20: %f' % (sum(volume20s)/20))
+        # print('error:', err)
+        print('  %6d      %15.4f      %8.4f             %4.4f' %
+              (n_trial, mean_vol, err, vol20))
+    # pylab.plot(dims, volumes[0:len(dims)], '.')
+    # pylab.gca().set_yscale('log')
+    # pylab.xlabel('d (dimensions)')
+    # pylab.ylabel('volume')
+    # pylab.title('Hypersphere volume (unit radius) in d dimensions')
+    # pylab.savefig('c2.png')
+    # pylab.show()
 
 
 
@@ -741,4 +793,5 @@ if __name__=='__main__':
     # volume_test4()
     # volume_test5()
     # volume_test6()
-    volume_test7()
+    # volume_test7()
+    volume_test8()
