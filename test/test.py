@@ -736,6 +736,52 @@ def volume_test8():
     # pylab.show()
 
 
+def energy_test1():
+    """
+    """
+    x = range(16)
+    y = [md.Energy(n, -0.1, 0.1) for n in x]
+    pylab.plot(x, y, 'o', label='c=-0.1, q=0.1')
+    y = [md.Energy(n, -0.2, 0.2) for n in x]
+    pylab.plot(x, y, label='c=-0.2, q=0.2')
+    y = [md.Energy(n, -0.3, 0.3) for n in x]
+    pylab.plot(x, y, label='c=-0.3, q=0.3')
+    y = [md.Energy(n, -0.4, 0.4) for n in x]
+    pylab.plot(x, y, label='c=-0.4, q=0.4')
+    y = [md.Energy(n, -0.5, 0.5) for n in x]
+    pylab.plot(x, y, label='c=-0.5, q=0.5')
+
+    pylab.legend(loc='lower right')
+    pylab.axis([0.0, 15.0, -3.0, 30.0])
+    pylab.title('Corrected Anharmonic Energies for Small Values\nof cubic (c) and quartic (q)')
+    pylab.xlabel('Energy Level')
+    pylab.ylabel('Energy')
+    # pylab.savefig('a3_3.png')
+    pylab.show()
+
+    # cubic = -0.5
+    # quartic = 0.5
+    # x_max = 5.0
+    # nx = 100
+    # dx = 2.0 * x_max / (nx - 1)
+    # x = [i * dx for i in range(-(nx - 1) / 2, nx / 2 + 1)]
+    # y = [md.V(a, cubic, quartic) for a in x]
+    # pylab.plot(x, y, label='anharmonic')
+
+    # cubic = 0.0
+    # quartic = 0.0
+    # y = [md.V(a, cubic, quartic) for a in x]
+    # pylab.title('Harmonic and Anharmonic Potentials')
+    # pylab.xlabel('position')
+    # pylab.ylabel('potential energy')
+    # pylab.plot(x, y, label='harmonic')
+
+    # pylab.legend()
+    # pylab.axis([-4.0, 4.0, 0.0, 3.0])
+    # # pylab.savefig('a3_2.png')
+    # pylab.show()
+
+
 
 
 if __name__=='__main__':
@@ -794,4 +840,9 @@ if __name__=='__main__':
     # volume_test5()
     # volume_test6()
     # volume_test7()
-    volume_test8()
+    # volume_test8()
+
+    # ====================
+    # Energy tests
+    # ====================
+    energy_test1()

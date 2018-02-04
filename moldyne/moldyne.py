@@ -148,7 +148,6 @@ def pair_time(pos_a, vel_a, pos_b, vel_b, sigma, sigma_sq):
         del_t = float('inf')
     return del_t
 
-
 def disk_dist(x, y):
     """
     Distance between two disks in a 1x1 square with periodic boundary
@@ -161,19 +160,57 @@ def disk_dist(x, y):
 
     return  np.sqrt(d_x**2 + d_y**2)
 
-
 def phi6(phi):
+    """
+    """
     return (sum([np.exp(6.0j * ( phi + (x * np.pi/3.0)))
                  for x in range(6)])
             / 6.0)
 
+def V(x, cubic, quartic):
+    """
+    """
+    return (x**2 / 2) + (cubic * x**3) + (quartic * x**4)
+
+def Energy(n, cubic, quartic):
+    """
+    """
+    return n + 0.5 - (15.0 / 4.0 * cubic**2 * (n**2 + n + 11.0/30.0)) \
+         + (3.0 / 2.0 * quartic * (n**2 + n + 1.0/2.0))
+
+def Z(cubic, quartic, beta, n_max):
+    """
+    """
+    return sum(np.exp(-beta * Energy(n, cubic, quartic))
+               for n in range(n_max + 1))
+
+
+
+# ====================
+# Sphere Volume
+# ====================
+
+def direct_pi(N, dimension):
+    """
+    Direct randomized calculation of PI.
+    """
+    n_hits = 0
+    for i in range(N):
+        x_len = 0.0
+        for j in range(dimension):
+            x = random.uniform(-1.0, 1.0)
+            x_len += x**2
+            if x_len > 1.0:
+                break
+        if x_len <= 1.0:
+            n_hits += 1
+    return n_hits
 
 def sphere_volume(dimension):
     """
     Volume of N-dimensional sphere.
     """
     return np.pi**(dimension / 2.0) / gamma(dimension / 2.0 + 1.0)
-
 
 def sample_sphere(n_trials, d):
     """
@@ -201,7 +238,6 @@ def sample_sphere(n_trials, d):
         # points.append(x[:])
 
     return r_sqs
-
 
 def sample_cylinder_old(n_trials, d):
     """
@@ -235,7 +271,6 @@ def sample_cylinder_old(n_trials, d):
         # points.append(x[:])
 
     return n_hits
-
 
 def sample_cylinder(n_trials, d):
     """
@@ -271,23 +306,6 @@ def sample_cylinder(n_trials, d):
         if r_sqC < 1.0:
             n_hits += 1
 
-    return n_hits
-
-
-def direct_pi(N, dimension):
-    """
-    Direct randomized calculation of PI.
-    """
-    n_hits = 0
-    for i in range(N):
-        x_len = 0.0
-        for j in range(dimension):
-            x = random.uniform(-1.0, 1.0)
-            x_len += x**2
-            if x_len > 1.0:
-                break
-        if x_len <= 1.0:
-            n_hits += 1
     return n_hits
 
 
