@@ -738,6 +738,7 @@ def volume_test8():
 
 def energy_test1():
     """
+    Plot different anharmonic energy landscapes.
     """
     x = range(16)
     y = [md.Energy(n, -0.1, 0.1) for n in x]
@@ -759,27 +760,32 @@ def energy_test1():
     # pylab.savefig('a3_3.png')
     pylab.show()
 
-    # cubic = -0.5
-    # quartic = 0.5
-    # x_max = 5.0
-    # nx = 100
-    # dx = 2.0 * x_max / (nx - 1)
-    # x = [i * dx for i in range(-(nx - 1) / 2, nx / 2 + 1)]
-    # y = [md.V(a, cubic, quartic) for a in x]
-    # pylab.plot(x, y, label='anharmonic')
 
-    # cubic = 0.0
-    # quartic = 0.0
-    # y = [md.V(a, cubic, quartic) for a in x]
-    # pylab.title('Harmonic and Anharmonic Potentials')
-    # pylab.xlabel('position')
-    # pylab.ylabel('potential energy')
-    # pylab.plot(x, y, label='harmonic')
+def energy_test2():
+    """
+    Plot harmonic vs. anharmonic energy landscapes.
+    """
+    cubic = -0.5
+    quartic = 0.5
+    x_max = 5.0
+    nx = 100
+    dx = 2.0 * x_max / (nx - 1)
+    x = [i * dx for i in range(-(nx - 1) / 2, nx / 2 + 1)]
+    y = [md.V(a, cubic, quartic) for a in x]
+    pylab.plot(x, y, label='anharmonic')
 
-    # pylab.legend()
-    # pylab.axis([-4.0, 4.0, 0.0, 3.0])
-    # # pylab.savefig('a3_2.png')
-    # pylab.show()
+    cubic = 0.0
+    quartic = 0.0
+    y = [md.V(a, cubic, quartic) for a in x]
+    pylab.title('Harmonic and Anharmonic Potentials')
+    pylab.xlabel('position')
+    pylab.ylabel('potential energy')
+    pylab.plot(x, y, label='harmonic')
+
+    pylab.legend()
+    pylab.axis([-4.0, 4.0, 0.0, 3.0])
+    # pylab.savefig('a3_2.png')
+    pylab.show()
 
 
 
@@ -846,3 +852,4 @@ if __name__=='__main__':
     # Energy tests
     # ====================
     energy_test1()
+    energy_test2()
