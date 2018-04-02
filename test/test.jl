@@ -2,7 +2,7 @@
 # 2017
 # Moldyne test
 
-using Moldyne
+using moldyne
 
 
 function test_structure()

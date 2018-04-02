@@ -1,8 +1,8 @@
 # John Eargle (mailto: jeargle at gmail.com)
-# 2017
-# Moldyne
+# 2017-2018
+# moldyne
 
-module Moldyne
+module moldyne
 
 export Structure, setPositions
 
