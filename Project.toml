@@ -1,0 +1,11 @@
+name = "Moldyne"
+uuid = "197adc34-8746-43c3-99e8-b883ab29b1c4"
+keywords = ["molecular dynamics", "statistical mechanics"]
+license = "MIT"
+desc = "Molecular dynamics program written in julia"
+version = "0.0.1"
+
+[deps]
+Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
+Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
