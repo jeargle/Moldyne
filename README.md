@@ -1,9 +1,9 @@
 Moldyne
 =======
 
-Molecular dynamics program written in julia.
+Molecular dynamics and monte carlo simulator written in julia.
 
-It is based off of lessons learned in *Understanding Molecular Dynamics* by Frenkel and Smit as well as *The Art of Molecular Dynamics Simulations* by Rapaport.
+This project is based off of lessons learned from *Understanding Molecular Dynamics* by Frenkel and Smit, *The Art of Molecular Dynamics Simulations* by Rapaport, and a Computational Statistical Mechanics course on coursera.
 
 
 Input
