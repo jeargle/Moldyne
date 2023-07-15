@@ -1,3 +1,5 @@
+# DEPRECATED - classes not needed in julia
+
 # Author:: John Eargle (mailto: jeargle at gmail.com)
 # May 2011
 # :title: Vector
@@ -37,7 +39,7 @@ class Vector < Array
       super
     end
   end
-  
+
   def /(other)
     case other
     when Array
@@ -72,7 +74,7 @@ class Vector < Array
       end
     else
       super
-    end    
+    end
   end
 
 end
@@ -86,7 +88,7 @@ class Array
 
 end
 
-# 
+#
 class Coord
 
   attr_reader :x, :y

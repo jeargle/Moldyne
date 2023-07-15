@@ -1,3 +1,5 @@
+# DEPRECATED - classes not needed in julia
+
 # Author:: John Eargle (mailto: jeargle at gmail.com)
 # 2011-2015
 # :title: Coord2d
