@@ -139,7 +139,7 @@ def disk_test1():
         pos = md.direct_disks_box(N, sigma)
         for k in range(N): histo_data.append(pos[k][0])
 
-    pylab.hist(histo_data, bins=100, normed=True)
+    pylab.hist(histo_data, bins=100, density=True)
     pylab.xlabel('x')
     pylab.ylabel('frequency')
     pylab.title('x-coordinates for 1e6 runs of direct_disks_box\nwith 4 disks of radius 0.1196')
@@ -168,7 +168,7 @@ def disk_test2():
 
     print('  acceptance ratio: %f' % (1.0*accept_count/n_steps))
 
-    pylab.hist(histo_data, bins=100, normed=True)
+    pylab.hist(histo_data, bins=100, density=True)
     pylab.xlabel('x')
     pylab.ylabel('frequency')
     pylab.title('x-coordinates for 2e6 runs of markov_disks_box\nwith 4 disks of radius 0.1196 and $\delta$=0.18')
@@ -227,7 +227,7 @@ def disk_test3():
         # print('vel', vel)
         for k in pos: histo_data.append(k[0])
 
-    pylab.hist(histo_data, bins=100, normed=True)
+    pylab.hist(histo_data, bins=100, density=True)
     pylab.xlabel('x')
     pylab.ylabel('frequency')
     pylab.title('x-coordinates for 2e5 events of event_disks_box\nwith 4 disks of radius 0.1196')
@@ -287,7 +287,7 @@ def disk_test4():
         # print('pos', pos)
         # print('vel', vel)
 
-    pylab.hist(histo_data, bins=100, normed=True)
+    pylab.hist(histo_data, bins=100, density=True)
     pylab.xlabel('x')
     pylab.ylabel('frequency')
     pylab.title('x-coordinates for 5e5 events of event_disks_box\nwith 4 disks of radius 0.1196 (only non-wall collisions plotted)')
@@ -353,7 +353,7 @@ def disk_test5():
         # print('pos', pos)
         # print('vel', vel)
 
-    pylab.hist(histo_data, bins=100, normed=True)
+    pylab.hist(histo_data, bins=100, density=True)
     pylab.xlabel('x')
     pylab.ylabel('frequency')
     pylab.title('x-coordinates at regular timesteps for 1e6 events\nof event_disks_box with 4 disks of radius 0.1196')
@@ -770,7 +770,7 @@ def energy_test2():
     x_max = 5.0
     nx = 100
     dx = 2.0 * x_max / (nx - 1)
-    x = [i * dx for i in range(-(nx - 1) / 2, nx / 2 + 1)]
+    x = [i * dx for i in range(-(nx - 1) // 2, (nx // 2) + 1)]
     y = [md.V(a, cubic, quartic) for a in x]
     pylab.plot(x, y, label='anharmonic')
 
@@ -851,5 +851,6 @@ if __name__=='__main__':
     # ====================
     # Energy tests
     # ====================
+
     energy_test1()
     energy_test2()
