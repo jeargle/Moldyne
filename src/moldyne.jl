@@ -7,7 +7,7 @@ using Plots
 using Printf
 using Random
 
-export Structure, set_positions
+export Structure, Trajectory, set_positions, read_xyz_file
 
 # Molecular structure including atomic positions and pairwise bonds.
 struct Structure
@@ -37,8 +37,37 @@ struct Structure
     end
 end
 
+
+#
+struct Trajectory
+    structure::Structure
+    trajectoryFilename::AbstractString
+    dimension::Int64
+
+    function Trajectory(structure::Structure, trajectoryFilename::AbstractString, dimension::Int64)
+        new(structure, trajectoryFilename, dimension)
+    end
+
+end
+
+
 function set_positions()
     return 0
+end
+
+
+# Read trajectory file and extract atomic positions for each frame.
+function read_xyz_file(trajectory::Trajectory)
+    trajectoryFile = open(trajectory.trajectoryFilename, "r")
+    numAtoms = Int64(readline(trajectoryFile))
+    if numAtoms != length(trajectory.structure.potitions)
+        println("Error: atom count mismatch")
+    end
+
+    for line in eachline(trajectoryFile)
+        print(line)
+    end
+    close(trajectoryFile)
 end
 
 end
