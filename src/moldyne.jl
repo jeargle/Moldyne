@@ -32,7 +32,32 @@ struct Trajectory
 end
 
 
-function set_positions()
+#
+struct MdSystem
+    structure::Structure
+    temperature::Float64
+    dimension::Int64
+    positions::Array{Array{Float64, 1}, 1}
+    newPositions::Array{Array{Float64, 1}, 1}
+    velocities::Array{Array{Float64, 1}, 1}
+    forces::Array{Array{Float64, 1}, 1}
+    energy::Float64
+    kineticEnergy::Float64
+    timestep::Float64
+
+    function MdSystem(structure::Structure, temperature, dimension)
+        positions = Array{Float64, 1}[]
+        newPositions = Array{Float64, 1}[]
+        velocities = Array{Float64, 1}[]
+        forces = Array{Float64, 1}[]
+
+        new(structure, temperature, dimension, positions, newPositions, velocities, forces, 0.0, 0.0, 0.01)
+    end
+
+end
+
+
+function set_positions(structure::Structure)
     return 0
 end
 
