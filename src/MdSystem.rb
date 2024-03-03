@@ -1,5 +1,4 @@
 # Author:: John Eargle (mailto: jeargle at gmail.com)
-# 2010-2015
 # :title: MDSystem
 
 require_relative 'Coord2d'
@@ -10,17 +9,14 @@ require_relative 'Structure'
 #
 class MDSystem
 
-  # 
+  #
   def initialize(structure, temperature, dimension)
-    # @structureFilename = structureFilename
     @structure = structure
     @temperature = temperature
     @dimension = dimension
-    # @positions = @structure.positions
     @newPositions = @structure.positions
     numPositions = @newPositions.length
     @positions = Array.new(numPositions)
-    # @newPositions = Array.new(numPositions)
     @velocities = Array.new(numPositions)
     @forces = Array.new(numPositions)
     @energy = 0.0
@@ -36,7 +32,6 @@ class MDSystem
     @cutoff = 14.0
     @cutoffEnergy = 4 * (1.0 / @cutoff**12 - 1.0 / @cutoff**6)
 
-    # setPositions
     setVelocities
   end
 
@@ -44,38 +39,6 @@ class MDSystem
   def numAtoms
     return @positions.length
   end
-
-  # Get number of atomic positions defined in @structureFile
-  # @return Number of lines in the file
-  # def getNumPositions
-  #   numLines = 0
-
-  #   File.readlines(@structureFilename).each do |line|
-  #     numLines += 1
-  #   end
-
-  #   return numLines
-  # end
-
-  # Read PDB file and extract atomic positions.
-  # def setPositions
-  #   numLines = 0
-
-  #   File.readlines(@structureFilename).each do |line|
-  #     c1 = line[31,7].to_f
-  #     c2 = line[39,7].to_f
-
-  #     if @dimension == 2
-  #       @newPositions[numLines] = Coord2d.new(c1, c2)
-  #     elsif @dimension == 3
-  #       c3 = line[47,7].to_f
-  #       @newPositions[numLines] = Coord3d.new(c1, c2, c3)
-  #     end
-
-  #     numLines += 1
-  #   end
-
-  # end
 
   # Set initial velocities to random values.
   def setVelocities
@@ -96,7 +59,7 @@ class MDSystem
       sumVelocities = sumVelocities.plus(newVelocity)
       sumVelocitiesSquared += newVelocity.dot(newVelocity)
     end
-    
+
     # Velocity center of mass
     sumVelocities = sumVelocities.times(1.0/@positions.length)
 
@@ -109,7 +72,7 @@ class MDSystem
       @positions[i] = @newPositions[i].minus((@velocities[i]).times(@timestep))
     end
   end
-  
+
   # Compute all pairwise atomic forces for the current system state.
   def computeForces
     #puts ">computeForces"
@@ -124,7 +87,7 @@ class MDSystem
 
     # Loop over all pairs
     0.upto(@forces.length-2) do |i|
-      (i+1).upto(@forces.length-1) do |j|	
+      (i+1).upto(@forces.length-1) do |j|
 	separation = @newPositions[i].minus(@newPositions[j])
 	# Periodic boundary condition
 	boxImage = separation.elementDivide(@box)
@@ -168,9 +131,9 @@ class MDSystem
     elsif @dimension == 3
       sumVelocities = Coord3d.new(0.0, 0.0, 0.0)
     end
-    
+
     sumVelSquared = 0.0
-    
+
     0.upto(@positions.length-1) do |i|
       newPos = @newPositions[i].times(2).minus(@positions[i]).plus(@forces[i].times(@timestep**2))
       @velocities[i] = newPos.minus(@positions[i]).times(1.0/(2*@timestep))
@@ -180,7 +143,7 @@ class MDSystem
       @positions[i] = @newPositions[i]
       @newPositions[i] = newPos
     end
-    
+
     # K = 0.5 * m * v**2
     @kineticEnergy = 0.5 * sumVelSquared
     @temperature = @kineticEnergy / (2*@positions.length)
@@ -207,7 +170,7 @@ class MDSystem
         posString += "#{i}: (" + "%.3f" % @newPositions[i].x + "," +
                      "%.3f" % @newPositions[i].y + "), "
       end
-      
+
       i = @positions.length-1
       posString += "#{i}: (" + "%.3f" % @newPositions[i].x + "," +
                    "%.3f" % @newPositions[i].y + ")\n"
@@ -215,15 +178,15 @@ class MDSystem
       0.upto(@positions.length-2) do |i|
         posString += "#{i}: (" + "%.3f" % @newPositions[i].x + "," +
                      "%.3f" % @newPositions[i].y + "," +
-                     "%.3f" % @newPositions[i].z + "), "        
+                     "%.3f" % @newPositions[i].z + "), "
       end
-      
+
       i = @positions.length-1
       posString += "#{i}: (" + "%.3f" % @newPositions[i].x + "," +
                    "%.3f" % @newPositions[i].y + "," +
                    "%.3f" % @newPositions[i].z + ")\n"
     end
-    
+
     return posString
   end
 
@@ -242,7 +205,7 @@ class MDSystem
                      "%.3f" % @newPositions[i].z + "\n"
       end
     end
-    
+
     return xyzString
   end
 
@@ -254,7 +217,7 @@ class MDSystem
         velString += "#{i}: (" + "%.3f" % @velocities[i].x + "," +
                      "%.3f" % @velocities[i].y + "), "
       end
-      
+
       i = @velocities.length-1
       velString += "#{i}: (" + "%.3f" % @velocities[i].x + "," +
                    "%.3f" % @velocities[i].y + ")\n"
@@ -264,13 +227,13 @@ class MDSystem
                      "%.3f" % @velocities[i].y + "," +
                      "%.3f" % @velocities[i].z + "), "
       end
-      
+
       i = @velocities.length-1
       velString += "#{i}: (" + "%.3f" % @velocities[i].x + "," +
                    "%.3f" % @velocities[i].y + "," +
                    "%.3f" % @velocities[i].z + ")\n"
     end
-    
+
     return velString
   end
 
