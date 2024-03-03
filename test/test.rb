@@ -1,3 +1,5 @@
+# DEPRECATED - tests not needed in julia
+
 #! /usr/bin/ruby
 
 # Author:: John Eargle (mailto: jeargle at gmail.com)
@@ -7,13 +9,13 @@
 
 require_relative '../src/Coord2d'
 
-# 
+#
 def computeForces(coord1, coord2, box)
   #puts ">computeForces"
   energy = 0.0
   forceV = Coord2d.new(0.0, 0.0)
   cutoff = 14.0
-  
+
   # Loop over all pairs
   separation = coord1.minus(coord2)
   # Periodic boundary condition
@@ -48,4 +50,3 @@ coord1 = Coord2d.new(0.0,0.0)
   box = Coord2d.new(10.0,10.0)
   computeForces(coord1,coord2,box)
 end
-
