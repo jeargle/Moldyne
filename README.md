@@ -30,6 +30,7 @@ The simulation can run in 2D or 3D mode.  Both modes can use the same atomic pos
 Dependencies
 ------------
 
+* Distributions
 * Plots
 * Printf
 * Random

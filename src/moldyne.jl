@@ -3,11 +3,13 @@
 
 module moldyne
 
+using Distributions
 using Plots
 using Printf
 using Random
 
 export Structure, Trajectory, set_positions, read_pdb_file, read_xyz_file
+export markov_pi
 
 # Molecular structure including atomic positions and pairwise bonds.
 struct Structure
@@ -22,11 +24,11 @@ end
 #
 struct Trajectory
     structure::Structure
-    trajectoryFilename::AbstractString
+    trajectory_filename::AbstractString
     dimension::Int64
 
-    function Trajectory(structure::Structure, trajectoryFilename::AbstractString, dimension::Int64)
-        new(structure, trajectoryFilename, dimension)
+    function Trajectory(structure::Structure, trajectory_filename::AbstractString, dimension::Int64)
+        new(structure, trajectory_filename, dimension)
     end
 
 end
@@ -38,20 +40,20 @@ struct MdSystem
     temperature::Float64
     dimension::Int64
     positions::Array{Array{Float64, 1}, 1}
-    newPositions::Array{Array{Float64, 1}, 1}
+    new_positions::Array{Array{Float64, 1}, 1}
     velocities::Array{Array{Float64, 1}, 1}
     forces::Array{Array{Float64, 1}, 1}
     energy::Float64
-    kineticEnergy::Float64
+    kinetic_energy::Float64
     timestep::Float64
 
     function MdSystem(structure::Structure, temperature, dimension)
         positions = Array{Float64, 1}[]
-        newPositions = Array{Float64, 1}[]
+        new_positions = Array{Float64, 1}[]
         velocities = Array{Float64, 1}[]
         forces = Array{Float64, 1}[]
 
-        new(structure, temperature, dimension, positions, newPositions, velocities, forces, 0.0, 0.0, 0.01)
+        new(structure, temperature, dimension, positions, new_positions, velocities, forces, 0.0, 0.0, 0.01)
     end
 
 end
@@ -88,16 +90,41 @@ end
 
 # Read trajectory file and extract atomic positions for each frame.
 function read_xyz_file(trajectory::Trajectory)
-    trajectoryFile = open(trajectory.trajectoryFilename, "r")
-    numAtoms = Int64(readline(trajectoryFile))
-    if numAtoms != length(trajectory.structure.potitions)
+    trajectory_file = open(trajectory.trajectory_filename, "r")
+    num_atoms = Int64(readline(trajectory_file))
+    if num_atoms != length(trajectory.structure.potitions)
         println("Error: atom count mismatch")
     end
 
-    for line in eachline(trajectoryFile)
+    for line in eachline(trajectory_file)
         print(line)
     end
-    close(trajectoryFile)
+    close(trajectory_file)
+end
+
+
+# Reject the move if it falls outside the unit square.
+# Count a hit if it falls within the unit circle.
+function markov_pi(N, delta)
+    x, y = 1.0, 1.0
+    n_hits = 0
+    n_accepts = 0
+    uniform_dist = Uniform(-delta, delta)
+    for i in 1:N
+        del_x = rand(uniform_dist)
+        del_y = rand(uniform_dist)
+        if abs(x + del_x) < 1.0 && abs(y + del_y) < 1.0
+            x += del_x
+            y += del_y
+            n_accepts += 1
+        end
+
+        if x^2 + y^2 < 1.0
+            n_hits += 1
+        end
+    end
+
+    return n_hits, n_accepts
 end
 
 end
