@@ -3,6 +3,7 @@
 
 using moldyne
 
+using Plots
 using Printf
 
 
@@ -35,17 +36,17 @@ function test_markov_pi1()
     # n_trials = 1000
     n_runs = 100
     n_trials = 100
-    deltas = [(x+1)/10.0 for x in range(50)]
+    deltas = [(x+1)/10.0 for x in 1:50]
     acceptance_ratios = []
 
     for delta in deltas
         ars = 0.0
-        for run in range(n_runs)
-            n_hits, n_accepts = md.markov_pi(n_trials, delta)
+        for run in 1:n_runs
+            n_hits, n_accepts = markov_pi(n_trials, delta)
             ars +=  n_accepts / float(n_trials)
         end
-        acceptance_ratios.append(ars / n_runs)
-        @printf "%.1f, %f" delta, ars/n_runs
+        push!(acceptance_ratios, ars / n_runs)
+        @printf "%.1f, %f" delta (ars/n_runs)
     end
 
     # pylab.plot(deltas, acceptance_ratios, 'o')
@@ -53,6 +54,16 @@ function test_markov_pi1()
     # pylab.ylabel('acceptance ratio')
     # pylab.title('1/2 Rule: Acceptance ratio as a function of $\delta$')
     # pylab.show()
+    # p = plot(deltas, acceptance_ratios, label=permutedims(account_names), title="1/2 Rule: Acceptance ratio as a function of $\delta$", xlabel="$\delta$", ylabel="acceptance ratio")
+    p = plot(deltas,
+             acceptance_ratios,
+             title="1/2 Rule: Acceptance ratio as a function of Δ",
+             xlabel="Δ",
+             ylabel="acceptance ratio",
+             legend=false,
+             marker=:circle)
+    savefig(p, "test_markov_pi1.svg")
+
 end
 
 
@@ -72,8 +83,8 @@ function test_markov_pi2()
             pi_est = 4.0 * n_hits / float(n_trials)
             sigma += (pi_est - np.pi)^2
         end
-        sigmas.append(np.sqrt(sigma / n_runs))
-        @printf "%.1f, %f" delta, np.sqrt(sigma/n_runs)
+        push!(sigmas, np.sqrt(sigma / n_runs))
+        @printf "%.1f, %f" delta np.sqrt(sigma/n_runs)
     end
 
     # pylab.plot(deltas, sigmas, 'o')
@@ -85,8 +96,8 @@ end
 
 
 function main()
-    test_structure()
-    # test_markov_pi1()
+    # test_structure()
+    test_markov_pi1()
     # test_markov_pi2()
 end
 
