@@ -131,36 +131,39 @@ function test_markov_pi4()
         new_data = []
         mean = 0.0
         mean_sq = 0.0
-        N = len(data)
+        N = length(data)
 
         while data != []
-            x = data.pop()
-            y = data.pop()
+            x = pop!(data)
+            y = pop!(data)
             mean += x + y
             mean_sq += x^2 + y^2
-            new_data.append( (x + y) / 2.0 )
+            push!(new_data, (x + y) / 2.0)
         end
 
-        errors.append( sqrt(mean_sq/N - (mean/N)^2) / sqrt(N) )
-        bunches.append(i)
-        data = new_data[:]
+        push!(errors, sqrt(mean_sq/N - (mean/N)^2) / sqrt(N))
+        push!(bunches, i)
+        # data = new_data[:]
+        data = new_data
     end
 
-    # pylab.plot(bunches, errors, "o")
-    # pylab.xlabel("iteration")
-    # pylab.ylabel("naive error")
-    # pylab.title("Bunching: naive error vs iteration number")
-    # pylab.savefig("apparent_error_bunching.png", format="PNG")
-    # pylab.show()
+    p = plot(bunches,
+             errors,
+             title="Bunching: naive error vs iteration number",
+             xlabel="iteration",
+             ylabel="naive error",
+             legend=false,
+             marker=:circle)
+    savefig(p, "test_markov_pi4.svg")
 end
 
 
 function main()
-    # test_structure()
-    # test_markov_pi1()
-    # test_markov_pi2()
+    test_structure()
+    test_markov_pi1()
+    test_markov_pi2()
     test_markov_pi3()
-    # test_markov_pi4()
+    test_markov_pi4()
 end
 
 main()

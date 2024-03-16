@@ -110,6 +110,7 @@ function markov_pi(N, delta)
     n_hits = 0
     n_accepts = 0
     uniform_dist = Uniform(-delta, delta)
+
     for i in 1:N
         del_x = rand(uniform_dist)
         del_y = rand(uniform_dist)
@@ -133,6 +134,7 @@ function markov_pi_all_data(N, delta)
     data_sum = 0.0
     data_sum_sq = 0.0
     uniform_dist = Uniform(-delta, delta)
+
     for i in 1:N
         del_x = rand(uniform_dist)
         del_y = rand(uniform_dist)
@@ -147,6 +149,7 @@ function markov_pi_all_data(N, delta)
             data_sum_sq += 16.0  # 4.0^2
         end
     end
+
     return data_sum / float(N), data_sum_sq / float(N)
 end
 
@@ -154,6 +157,7 @@ function markov_pi_all_data2(N, delta)
     x, y = 1.0, 1.0
     data = []
     uniform_dist = Uniform(-delta, delta)
+
     for i in 1:N
         del_x = rand(uniform_dist)
         del_y = rand(uniform_dist)
@@ -164,11 +168,12 @@ function markov_pi_all_data2(N, delta)
         end
 
         if x^2 + y^2 < 1.0
-            data.append(4.0)
+            push!(data, 4.0)
         else
-            data.append(0.0)
+            push!(data, 0.0)
         end
     end
+
     return data
 end
 
