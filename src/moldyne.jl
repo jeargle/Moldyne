@@ -9,7 +9,7 @@ using Printf
 using Random
 
 export Structure, Trajectory, set_positions, read_pdb_file, read_xyz_file
-export markov_pi
+export markov_pi, markov_pi_all_data, markov_pi_all_data2
 
 # Molecular structure including atomic positions and pairwise bonds.
 struct Structure
@@ -113,6 +113,7 @@ function markov_pi(N, delta)
     for i in 1:N
         del_x = rand(uniform_dist)
         del_y = rand(uniform_dist)
+
         if abs(x + del_x) < 1.0 && abs(y + del_y) < 1.0
             x += del_x
             y += del_y
@@ -125,6 +126,50 @@ function markov_pi(N, delta)
     end
 
     return n_hits, n_accepts
+end
+
+function markov_pi_all_data(N, delta)
+    x, y = 1.0, 1.0
+    data_sum = 0.0
+    data_sum_sq = 0.0
+    uniform_dist = Uniform(-delta, delta)
+    for i in 1:N
+        del_x = rand(uniform_dist)
+        del_y = rand(uniform_dist)
+
+        if abs(x + del_x) < 1.0 && abs(y + del_y) < 1.0
+            x = x + del_x
+            y = y + del_y
+        end
+
+        if x^2 + y^2 < 1.0
+            data_sum += 4.0
+            data_sum_sq += 16.0  # 4.0^2
+        end
+    end
+    return data_sum / float(N), data_sum_sq / float(N)
+end
+
+function markov_pi_all_data2(N, delta)
+    x, y = 1.0, 1.0
+    data = []
+    uniform_dist = Uniform(-delta, delta)
+    for i in 1:N
+        del_x = rand(uniform_dist)
+        del_y = rand(uniform_dist)
+
+        if abs(x + del_x) < 1.0 && abs(y + del_y) < 1.0
+            x = x + del_x
+            y = y + del_y
+        end
+
+        if x^2 + y^2 < 1.0
+            data.append(4.0)
+        else
+            data.append(0.0)
+        end
+    end
+    return data
 end
 
 end

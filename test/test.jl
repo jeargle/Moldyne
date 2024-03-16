@@ -72,11 +72,13 @@ function test_markov_pi2()
 
     for delta in deltas
         sigma = 0.0
+
         for run in 1:n_runs
             n_hits, n_accepts = markov_pi(n_trials, delta)
             pi_est = 4.0 * n_hits / float(n_trials)
             sigma += (pi_est - pi)^2
         end
+
         push!(sigmas, sqrt(sigma / n_runs))
         @printf "%.1f, %f" delta sqrt(sigma/n_runs)
     end
@@ -93,10 +95,72 @@ function test_markov_pi2()
 end
 
 
+# Error
+function test_markov_pi3()
+    n_trials = 2^14
+    delta = 0.1
+    n_parties = 100
+    inside_error_bar = 0
+
+    for iteration in 1:n_parties
+        mean, mean_square = markov_pi_all_data(n_trials, delta)
+        naive_error = sqrt(mean_square  - mean^2) / sqrt(n_trials)
+        error =  abs(mean - pi)
+
+        if error < naive_error
+            inside_error_bar += 1
+        end
+
+        println(mean, " ,", error, " ,", naive_error)
+    end
+
+    println(inside_error_bar / float(n_parties), " fraction: error bar including pi")
+end
+
+
+# Bunching
+function test_markov_pi4()
+    power = 14
+    n_trials = 2^power
+    delta = 0.1
+    data = markov_pi_all_data2(n_trials, delta)
+    errors  = []
+    bunches = []
+
+    for i in 1:power
+        new_data = []
+        mean = 0.0
+        mean_sq = 0.0
+        N = len(data)
+
+        while data != []
+            x = data.pop()
+            y = data.pop()
+            mean += x + y
+            mean_sq += x^2 + y^2
+            new_data.append( (x + y) / 2.0 )
+        end
+
+        errors.append( sqrt(mean_sq/N - (mean/N)^2) / sqrt(N) )
+        bunches.append(i)
+        data = new_data[:]
+    end
+
+    # pylab.plot(bunches, errors, "o")
+    # pylab.xlabel("iteration")
+    # pylab.ylabel("naive error")
+    # pylab.title("Bunching: naive error vs iteration number")
+    # pylab.savefig("apparent_error_bunching.png", format="PNG")
+    # pylab.show()
+end
+
+
 function main()
-    test_structure()
-    test_markov_pi1()
-    test_markov_pi2()
+    # test_structure()
+    # test_markov_pi1()
+    # test_markov_pi2()
+    test_markov_pi3()
+    # test_markov_pi4()
 end
 
 main()
