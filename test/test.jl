@@ -91,7 +91,6 @@ function test_markov_pi2()
              legend=false,
              marker=:circle)
     savefig(p, "test_markov_pi2.svg")
-
 end
 
 
@@ -158,12 +157,100 @@ function test_markov_pi4()
 end
 
 
+# Test direct placement of 4 disks in a box.
+function disk_test1()
+    N = 4
+    sigma = 0.1196
+    # n_runs = 1000000
+    n_runs = 100000
+    histo_data = []
+
+    for run in 1:n_runs
+        pos = md.direct_disks_box(N, sigma)
+        for k in 1:N
+            push!(histo_data, pos[k][0])
+        end
+    end
+
+    pylab.hist(histo_data, bins=100, density=True)
+    pylab.xlabel("x")
+    pylab.ylabel("frequency")
+    pylab.title("x-coordinates for 1e6 runs of direct_disks_box\nwith 4 disks of radius 0.1196")
+    pylab.grid()
+    #pylab.savefig("direct_disks_histo.png")
+    pylab.show()
+end
+
+
+# Test markov placement of 1 disk in a box with 4 existing disks.
+function disk_test2()
+    L = [[0.25, 0.25], [0.75, 0.25], [0.25, 0.75], [0.75, 0.75]]
+    sigma = 0.1196
+    delta = 0.18   # 0.5 acceptance ratio
+
+    # n_steps = 2000000
+    n_steps = 20000
+    accept_count = 0
+    histo_data = []
+
+    for steps in 1:n_steps
+        acc = md.markov_disks_box(L, sigma, delta)
+        if acc
+            accept_count += 1
+        end
+        for k in L
+            push!(histo_data, k[0])
+        end
+    end
+
+    print("  acceptance ratio: %f" % (1.0*accept_count/n_steps))
+
+    # pylab.hist(histo_data, bins=100, density=True)
+    # pylab.xlabel("x")
+    # pylab.ylabel("frequency")
+    # pylab.title("x-coordinates for 2e6 runs of markov_disks_box\nwith 4 disks of radius 0.1196 and $\delta$=0.18")
+    # pylab.grid()
+    # pylab.show()
+
+    p = plot(deltas,
+             sigmas,
+             title="Performance: Standard deviation σ as a function of Δ",
+             xlabel="Δ",
+             ylabel="σ",
+             legend=false,
+             marker=:circle)
+    savefig(p, "test_markov_pi2.svg")
+end
+
+
 function main()
+    # ====================
+    # Structure
+    # ====================
+
     test_structure()
-    test_markov_pi1()
-    test_markov_pi2()
-    test_markov_pi3()
-    test_markov_pi4()
+
+    # ====================
+    # Markov Pi
+    # ====================
+
+    # test_markov_pi1()
+    # test_markov_pi2()
+    # test_markov_pi3()
+    # test_markov_pi4()
+
+    # ====================
+    # Disk Placement
+    # ====================
+
+    # test_disk1()
+    # test_disk2()
+    # test_disk3()
+    # test_disk4()
+    # test_disk5()
+    # test_disk6()
+    # test_disk7()
+
 end
 
 main()

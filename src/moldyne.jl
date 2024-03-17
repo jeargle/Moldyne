@@ -177,4 +177,85 @@ function markov_pi_all_data2(N, delta)
     return data
 end
 
+# Place N non-overlapping disks in a box.
+# N: number of disks to place
+# sigma: disk radius
+function direct_disks_box(N, sigma)
+    overlap = true
+    uniform_dist = Uniform(sigma, 1.0 - sigma)
+
+    while overlap
+        # L = [(random.uniform(sigma, 1.0 - sigma), random.uniform(sigma, 1.0 - sigma))]
+        L = [(rand(uniform_dist), rand(uniform_dist))]
+
+        for k in 1:N
+            # a = (random.uniform(sigma, 1.0 - sigma), random.uniform(sigma, 1.0 - sigma))
+            a = (rand(uniform_dist), rand(uniform_dist))
+            min_dist_sq = min(((a[0] - b[0])^2 + (a[1] - b[1])^2) for b in L)
+
+            if min_dist_sq < 4.0 * sigma^2
+                overlap = true
+                break
+            else
+                overlap = false
+                push!(L, a)
+            end
+        end
+    end
+
+    return L
+end
+
+function direct_disks_box2(N, sigma)
+    condition = false
+    att = 0
+    acc = 0
+    uniform_dist = Uniform(sigma, 1.0 - sigma)
+
+    while condition == false
+        # L = [(random.uniform(sigma, 1.0 - sigma), random.uniform(sigma, 1.0 - sigma))]
+        L = [(rand(uniform_dist), rand(uniform_dist))]
+
+        for k in 1:N
+            att += 1
+            # a = (random.uniform(sigma, 1.0 - sigma), random.uniform(sigma, 1.0 - sigma))
+            a = (rand(uniform_dist), rand(uniform_dist))
+            min_dist = min( sqrt((a[0] - b[0])^2 + (a[1] - b[1])^2) for b in L )
+            if min_dist < 2.0 * sigma
+                condition = false
+                break
+            else
+                push!(L, a)
+                acc += 1
+                condition = true
+            end
+        end
+    end
+
+    return att, acc, L
+end
+
+# Place one disk in a box with existing disks.  The placement
+# is a jump from one of the existing disks.
+# L: array of existing disk locations
+# sigma: disk radius
+# delta: max jump distance
+function markov_disks_box(L, sigma, delta)
+    sigma_sq = sigma^2
+    accepted = false
+    uniform_dist = Uniform(-delta, delta)
+    a = random.choice(L)
+    b = [a[0] + rand(uniform_dist), a[1] + rand(uniform_dist)]
+    min_dist = min((b[0] - c[0])^2 + (b[1] - c[1])^2 for c in L if c != a)
+    box_cond = min(b[0], b[1]) < sigma || max(b[0], b[1]) > 1.0 - sigma
+
+    if !(box_cond || min_dist < 4.0 * sigma_sq)
+        # a[:] = b
+        a = b
+        accepted = true
+    end
+
+    return accepted
+end
+
 end
