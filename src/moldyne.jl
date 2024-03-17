@@ -10,6 +10,7 @@ using Random
 
 export Structure, Trajectory, set_positions, read_pdb_file, read_xyz_file
 export markov_pi, markov_pi_all_data, markov_pi_all_data2
+export direct_disks_box, direct_disks_box2, markov_disks_box
 
 # Molecular structure including atomic positions and pairwise bonds.
 struct Structure
@@ -183,15 +184,13 @@ end
 function direct_disks_box(N, sigma)
     overlap = true
     uniform_dist = Uniform(sigma, 1.0 - sigma)
+    L = []
 
     while overlap
-        # L = [(random.uniform(sigma, 1.0 - sigma), random.uniform(sigma, 1.0 - sigma))]
         L = [(rand(uniform_dist), rand(uniform_dist))]
-
-        for k in 1:N
-            # a = (random.uniform(sigma, 1.0 - sigma), random.uniform(sigma, 1.0 - sigma))
+        for k in 2:N
             a = (rand(uniform_dist), rand(uniform_dist))
-            min_dist_sq = min(((a[0] - b[0])^2 + (a[1] - b[1])^2) for b in L)
+            min_dist_sq = minimum( [((a[1] - b[1])^2 + (a[2] - b[2])^2) for b in L] )
 
             if min_dist_sq < 4.0 * sigma^2
                 overlap = true

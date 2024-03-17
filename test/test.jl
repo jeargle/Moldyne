@@ -158,32 +158,32 @@ end
 
 
 # Test direct placement of 4 disks in a box.
-function disk_test1()
+function test_disk1()
     N = 4
     sigma = 0.1196
-    # n_runs = 1000000
-    n_runs = 100000
+    # n_runs = 100000
+    n_runs = 1000000
     histo_data = []
 
     for run in 1:n_runs
-        pos = md.direct_disks_box(N, sigma)
+        pos = direct_disks_box(N, sigma)
         for k in 1:N
-            push!(histo_data, pos[k][0])
+            push!(histo_data, pos[k][1])
         end
     end
 
-    pylab.hist(histo_data, bins=100, density=True)
-    pylab.xlabel("x")
-    pylab.ylabel("frequency")
-    pylab.title("x-coordinates for 1e6 runs of direct_disks_box\nwith 4 disks of radius 0.1196")
-    pylab.grid()
-    #pylab.savefig("direct_disks_histo.png")
-    pylab.show()
+    p = histogram(histo_data,
+                  bins=100,
+                  title="x-coordinates for 1e6 runs of direct_disks_box\nwith 4 disks of radius 0.1196",
+                  xlabel="x",
+                  ylabel="frequency",
+                  legend=false)
+    savefig(p, "test_disk1.svg")
 end
 
 
 # Test markov placement of 1 disk in a box with 4 existing disks.
-function disk_test2()
+function test_disk2()
     L = [[0.25, 0.25], [0.75, 0.25], [0.25, 0.75], [0.75, 0.75]]
     sigma = 0.1196
     delta = 0.18   # 0.5 acceptance ratio
@@ -194,7 +194,7 @@ function disk_test2()
     histo_data = []
 
     for steps in 1:n_steps
-        acc = md.markov_disks_box(L, sigma, delta)
+        acc = markov_disks_box(L, sigma, delta)
         if acc
             accept_count += 1
         end
@@ -228,7 +228,7 @@ function main()
     # Structure
     # ====================
 
-    test_structure()
+    # test_structure()
 
     # ====================
     # Markov Pi
@@ -243,7 +243,7 @@ function main()
     # Disk Placement
     # ====================
 
-    # test_disk1()
+    test_disk1()
     # test_disk2()
     # test_disk3()
     # test_disk4()
