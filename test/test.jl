@@ -188,38 +188,29 @@ function test_disk2()
     sigma = 0.1196
     delta = 0.18   # 0.5 acceptance ratio
 
-    # n_steps = 2000000
-    n_steps = 20000
+    n_steps = 2000000
+    # n_steps = 20000
     accept_count = 0
     histo_data = []
 
     for steps in 1:n_steps
-        acc = markov_disks_box(L, sigma, delta)
+        acc, pos = markov_disks_box(L, sigma, delta)
+
         if acc
             accept_count += 1
-        end
-        for k in L
-            push!(histo_data, k[0])
+            push!(histo_data, pos[1])
         end
     end
 
-    print("  acceptance ratio: %f" % (1.0*accept_count/n_steps))
+    @printf "  acceptance ratio: %f\n" accept_count/n_steps
 
-    # pylab.hist(histo_data, bins=100, density=True)
-    # pylab.xlabel("x")
-    # pylab.ylabel("frequency")
-    # pylab.title("x-coordinates for 2e6 runs of markov_disks_box\nwith 4 disks of radius 0.1196 and $\delta$=0.18")
-    # pylab.grid()
-    # pylab.show()
-
-    p = plot(deltas,
-             sigmas,
-             title="Performance: Standard deviation σ as a function of Δ",
-             xlabel="Δ",
-             ylabel="σ",
-             legend=false,
-             marker=:circle)
-    savefig(p, "test_markov_pi2.svg")
+    p = histogram(histo_data,
+                  bins=100,
+                  title="x-coordinates for 2e6 runs of markov_disks_box\nwith 4 disks of radius 0.1196 and Δ=0.18",
+                  xlabel="x",
+                  ylabel="frequency",
+                  legend=false)
+    savefig(p, "test_disk2.svg")
 end
 
 
@@ -243,8 +234,8 @@ function main()
     # Disk Placement
     # ====================
 
-    test_disk1()
-    # test_disk2()
+    # test_disk1()
+    test_disk2()
     # test_disk3()
     # test_disk4()
     # test_disk5()

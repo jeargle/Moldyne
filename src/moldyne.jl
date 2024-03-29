@@ -243,18 +243,16 @@ function markov_disks_box(L, sigma, delta)
     sigma_sq = sigma^2
     accepted = false
     uniform_dist = Uniform(-delta, delta)
-    a = random.choice(L)
-    b = [a[0] + rand(uniform_dist), a[1] + rand(uniform_dist)]
-    min_dist = min((b[0] - c[0])^2 + (b[1] - c[1])^2 for c in L if c != a)
-    box_cond = min(b[0], b[1]) < sigma || max(b[0], b[1]) > 1.0 - sigma
+    a = rand(L)
+    b = [a[1] + rand(uniform_dist), a[2] + rand(uniform_dist)]
+    min_dist = minimum( (b[1] - c[1])^2 + (b[2] - c[2])^2 for c in L if c != a )
+    box_cond = min(b[1], b[2]) < sigma || max(b[1], b[2]) > (1.0 - sigma)
 
     if !(box_cond || min_dist < 4.0 * sigma_sq)
-        # a[:] = b
-        a = b
         accepted = true
     end
 
-    return accepted
+    return accepted, b
 end
 
 end
