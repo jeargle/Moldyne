@@ -1,6 +1,7 @@
 # John Eargle
 # 2017
 
+import math
 import random
 
 import numpy as np
@@ -183,6 +184,11 @@ def Z(cubic, quartic, beta, n_max):
     """
     return sum(np.exp(-beta * Energy(n, cubic, quartic))
                for n in range(n_max + 1))
+
+def Z2(beta):
+    """
+    """
+    return 1.0/(2*math.sinh(beta/2.0))
 
 
 

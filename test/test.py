@@ -788,6 +788,22 @@ def energy_test2():
     pylab.show()
 
 
+def energy_test3():
+    """
+    Calculate partition function Z for different energies.
+    """
+    kb = 1.3806488e-23
+    T = 300.0
+    # beta = 1.0/(kb*T)
+    beta = 10.0
+    cubic = 0.0
+    quartic = 0.0
+
+    print 'beta | Z      | Z2'
+    print '------------------------'
+    for beta in [i for i in range(1,11)]:
+        print '%2.0f    %f %f' % (beta, md.Z(cubic, quartic, beta, 10), md.Z2(beta))
+
 
 
 if __name__=='__main__':
@@ -854,3 +870,4 @@ if __name__=='__main__':
 
     energy_test1()
     energy_test2()
+    energy_test3()
