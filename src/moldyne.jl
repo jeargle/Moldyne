@@ -11,6 +11,7 @@ using Random
 export Structure, Trajectory, set_positions, read_pdb_file, read_xyz_file
 export markov_pi, markov_pi_all_data, markov_pi_all_data2
 export direct_disks_box, direct_disks_box2, markov_disks_box
+export wall_time, pair_time
 
 # Molecular structure including atomic positions and pairwise bonds.
 struct Structure
@@ -253,6 +254,38 @@ function markov_disks_box(L, sigma, delta)
     end
 
     return accepted, b
+end
+
+# Determine amount of time before disk motion in 1D hits a wall.
+function wall_time(pos_a, vel_a, sigma)
+    if vel_a > 0.0
+        del_t = (1.0 - sigma - pos_a) / vel_a
+    elseif vel_a < 0.0
+        del_t = (pos_a - sigma) / abs(vel_a)
+    else
+        del_t = Inf
+    end
+
+    return del_t
+end
+
+# Determine amount of time disk motions in 2D cause a pair of disks
+# to hit each other.
+function pair_time(pos_a, vel_a, pos_b, vel_b, sigma, sigma_sq)
+    del_x = [pos_b[1] - pos_a[1], pos_b[2] - pos_a[2]]
+    del_x_sq = del_x[1]^2 + del_x[2]^2
+    del_v = [vel_b[1] - vel_a[1], vel_b[2] - vel_a[2]]
+    del_v_sq = del_v[1]^2 + del_v[2]^2
+    scal = del_v[1] * del_x[1] + del_v[2] * del_x[2]
+    upsilon = scal^2 - del_v_sq * (del_x_sq - 4.0 * sigma_sq)
+
+    if upsilon > 0.0 && scal < 0.0
+        del_t = -(scal + sqrt(upsilon)) / del_v_sq
+    else
+        del_t = Inf
+    end
+
+    return del_t
 end
 
 end
