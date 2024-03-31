@@ -805,6 +805,23 @@ def energy_test3():
         print '%2.0f    %f %f' % (beta, md.Z(cubic, quartic, beta, 10), md.Z2(beta))
 
 
+def energy_test4():
+    """
+    Plot corrected anharmonic energies for small values of cubic (c) and quartic (q)
+    """
+    x = range(16)
+    y = [md.Energy(n, -0.1, 0.1) for n in x]
+    pylab.plot(x, y, 'o', label='c=-0.1, q=0.1')
+
+    pylab.legend(loc='lower right')
+    pylab.axis([0.0, 15.0, -3.0, 30.0])
+    pylab.title('Corrected Anharmonic Energies for Small Values\nof cubic (c) and quartic (q)')
+    pylab.xlabel('Energy Level')
+    pylab.ylabel('Energy')
+    pylab.savefig('a3_3.png')
+    pylab.show()
+
+
 
 if __name__=='__main__':
 
@@ -871,3 +888,4 @@ if __name__=='__main__':
     energy_test1()
     energy_test2()
     energy_test3()
+    energy_test4()
