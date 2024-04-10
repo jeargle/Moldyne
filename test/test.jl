@@ -280,6 +280,72 @@ function test_disk3()
 end
 
 
+# Molecular dynamics of four disks in a box.
+function test_disk4()
+    pos = [[0.25, 0.25],
+           [0.75, 0.25],
+           [0.25, 0.75],
+           [0.75, 0.75]]
+    vel = [[0.21, 0.12],
+           [0.71, 0.18],
+           [-0.23, -0.79],
+           [0.78, 0.1177]]
+    singles = [(1, 1), (1, 2), (2, 1), (2, 2), (3, 1), (3, 2), (4, 1), (4, 2)]
+    pairs = [(1, 2), (1, 3), (1, 4), (2, 3), (2, 4), (3, 4)]
+    sigma = 0.1196
+    sigma_sq = sigma^2
+    t = 0.0
+    n_events = 500000
+    # n_events = 100000
+    histo_data = []
+
+    for event in 1:n_events
+        wall_times = [wall_time(pos[k][l], vel[k][l], sigma)
+                      for (k, l)  in singles]
+        pair_times = [pair_time(pos[k], vel[k], pos[l], vel[l], sigma, sigma_sq)
+                      for (k, l) in pairs]
+        next_event = minimum([wall_times; pair_times])
+        t += next_event
+
+        for (k, l) in singles
+            pos[k][l] += vel[k][l] * next_event
+        end
+
+        if minimum(wall_times) < minimum(pair_times)
+            collision_disk, direction = singles[findfirst(==(next_event), wall_times)]
+            vel[collision_disk][direction] *= -1.0
+        else
+            a, b = pairs[findfirst(==(next_event), pair_times)]
+            del_x = [pos[b][1] - pos[a][1], pos[b][2] - pos[a][2]]
+            abs_x = sqrt(del_x[1]^2 + del_x[2]^2)
+            e_perp = [c / abs_x for c in del_x]
+            del_v = [vel[b][1] - vel[a][1], vel[b][2] - vel[a][2]]
+            scal = del_v[1] * e_perp[1] + del_v[2] * e_perp[2]
+            for k in 1:2
+                vel[a][k] += e_perp[k] * scal
+                vel[b][k] -= e_perp[k] * scal
+            end
+            # only recording pairwise disk collisions
+            for k in pos
+                push!(histo_data, k[1])
+            end
+        end
+        println("event", event)
+        println("time", t)
+        # println("pos", pos)
+        # println("vel", vel)
+    end
+
+    p = histogram(histo_data,
+                  bins=100,
+                  title="x-coordinates for 5e5 events of event_disks_box\nwith 4 disks of radius 0.1196 (only non-wall collisions plotted)",
+                  xlabel="x",
+                  ylabel="frequency",
+                  legend=false)
+    savefig(p, "test_disk4.svg")
+end
+
+
 function main()
     # ====================
     # Structure
@@ -302,8 +368,8 @@ function main()
 
     # test_disk1()
     # test_disk2()
-    test_disk3()
-    # test_disk4()
+    # test_disk3()
+    test_disk4()
     # test_disk5()
     # test_disk6()
     # test_disk7()

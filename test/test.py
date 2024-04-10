@@ -807,7 +807,7 @@ def energy_test3():
 
 def energy_test4():
     """
-    Plot corrected anharmonic energies for small values of cubic (c) and quartic (q)
+    Plot corrected anharmonic energies for small values of cubic (c) and quartic (q).
     """
     x = range(16)
     y = [md.Energy(n, -0.1, 0.1) for n in x]
