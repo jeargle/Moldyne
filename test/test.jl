@@ -365,8 +365,8 @@ function test_disk5()
     sigma = 0.1196
     sigma_sq = sigma^2
     t = 0.0
-    # n_events = 1000000
-    n_events = 100000
+    n_events = 1000000
+    # n_events = 100000
     histo_data = []
 
     for event in 1:n_events
@@ -434,6 +434,59 @@ function test_disk5()
 end
 
 
+# Markov simulation of four disks in a box.
+function test_disk6()
+    # detailed balance (global balance)
+    # irreducible
+    # aperiodic
+    accepts = 0
+    attempts = 0
+    N = 4
+    sigma = 0.1
+    # n_runs = 1000000
+    n_runs = 100000
+    conf_a = [(0.25, 0.25),
+              (0.25, 0.75),
+              (0.75, 0.25),
+              (0.75,0.75)]
+    conf_b = [(0.20, 0.20),
+              (0.20, 0.80),
+              (0.75, 0.25),
+              (0.75,0.75)]
+    conf_c = [(0.30, 0.20),
+              (0.30, 0.80),
+              (0.70, 0.20),
+              (0.70,0.70)]
+    hits = [0, 0, 0]
+    # Total = 0
+    del_xy = 0.1
+    configuration = [conf_a, conf_b, conf_c]
+
+    for run in 1:n_runs
+        println("run ", run)
+        at, ac, x_vec = direct_disks_box2(N, sigma)
+        attempts += at
+        accepts += ac
+        for c in 1:3
+            cond = true
+            for b in configuration[c]
+                cond_b = minimum(maximum( [abs(a[1] - b[1]), abs(a[2] - b[2])] ) for a in x_vec) < del_xy
+                cond *= cond_b
+            end
+            if cond
+                hits[c] += 1
+            end
+        end
+    end
+
+    for c in 1:3
+        println(hits[c] / float(n_runs), " proportion of confs in eight-dimensional volume element.")
+    end
+
+    println("acceptance ratio: ", 1.0*accepts/attempts)
+end
+
+
 
 function main()
     # ====================
@@ -459,8 +512,8 @@ function main()
     # test_disk2()
     # test_disk3()
     # test_disk4()
-    test_disk5()
-    # test_disk6()
+    # test_disk5()
+    test_disk6()
     # test_disk7()
 
 end

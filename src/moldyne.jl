@@ -211,6 +211,7 @@ function direct_disks_box2(N, sigma)
     att = 0
     acc = 0
     uniform_dist = Uniform(sigma, 1.0 - sigma)
+    L = []
 
     while condition == false
         # L = [(random.uniform(sigma, 1.0 - sigma), random.uniform(sigma, 1.0 - sigma))]
@@ -220,7 +221,7 @@ function direct_disks_box2(N, sigma)
             att += 1
             # a = (random.uniform(sigma, 1.0 - sigma), random.uniform(sigma, 1.0 - sigma))
             a = (rand(uniform_dist), rand(uniform_dist))
-            min_dist = min( sqrt((a[0] - b[0])^2 + (a[1] - b[1])^2) for b in L )
+            min_dist = minimum( sqrt((a[1] - b[1])^2 + (a[2] - b[2])^2) for b in L )
             if min_dist < 2.0 * sigma
                 condition = false
                 break
