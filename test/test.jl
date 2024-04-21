@@ -463,7 +463,9 @@ function test_disk6()
     configuration = [conf_a, conf_b, conf_c]
 
     for run in 1:n_runs
-        println("run ", run)
+        if run % 1000 == 0
+            println("run ", run)
+        end
         at, ac, x_vec = direct_disks_box2(N, sigma)
         attempts += at
         accepts += ac
@@ -484,6 +486,83 @@ function test_disk6()
     end
 
     println("acceptance ratio: ", 1.0*accepts/attempts)
+end
+
+
+# Markov simulation of N disks in a box.
+# First time, place N disks in a lattice.
+# Afterwards, start from a restart file with coords for all disks.
+function test_disk7()
+    filename = "disk_conf.txt"
+    # eta = 0.72
+    # N = 256
+    eta = 0.42
+    N = 64
+
+    k = int(sqrt(N) + 0.5)
+    k_offset = 1.0/k
+    sigma = sqrt(eta/pi)/k  # radius
+    sigma_sq = sigma^2
+    # delta = 0.5 * sigma
+    delta = 0.1 * sigma
+    n_steps = 1000
+    accept = 0
+    reject = 0
+
+    # Set locations
+    if os.path.isfile(filename)
+        # from input file
+        f = open(filename, "r")
+        L = []
+        for line in f
+            a, b = line.split()
+            push!(L, [float(a), float(b)])
+        end
+        f.close()
+        println("starting from file ", filename)
+    else
+        # place on lattice
+        L = []
+        for x in 1:k
+            for y in 1:k
+                push!(L, [k_offset/2.0 + k_offset*x, k_offset/2.0 + k_offset*y])
+            end
+        end
+        println("starting from scratch")
+    end
+
+    for step in 1:n_steps
+        println("step ",step)
+        a = random.choice(L)
+        b = [(a[0] + random.uniform(-delta, delta)) % 1.0,
+             (a[1] + random.uniform(-delta, delta)) % 1.0]
+        min_dist = minimum(disk_dist(b, c) for c in L if c != a)
+        println(" ", min_dist)
+        if !(min_dist < 2.0 * sigma)
+            a[:] = b
+            accept += 1
+            println("  accept")
+            # println(L)
+        else
+            reject += 1
+            # println("  reject")
+        end
+    end
+
+    println("Acceptance ratio: ", float(accept)/n_steps)
+
+    f = open(filename, "w")
+    for a in L
+        f.write(str(a[0]) + " " + str(a[1]) + "\n")
+    end
+    f.close()
+
+    println("sigma: ", sigma)
+
+    # md.show_conf(L, sigma, "test graph", "four_disks_b2.png")
+    # md.show_conf(L, sigma, "test graph")
+    # md.show_conf(L, sigma, "N=%d, $\eta$=%.2f" % (N, eta))
+    show_conf(L, sigma, @sprintf "N=%d, η=%.2f" N eta, "test_disk7.png")
 end
 
 

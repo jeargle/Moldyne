@@ -11,7 +11,8 @@ using Random
 export Structure, Trajectory, set_positions, read_pdb_file, read_xyz_file
 export markov_pi, markov_pi_all_data, markov_pi_all_data2
 export direct_disks_box, direct_disks_box2, markov_disks_box
-export wall_time, pair_time
+export wall_time, pair_time, disk_dist
+export show_conf
 
 # Molecular structure including atomic positions and pairwise bonds.
 struct Structure
@@ -287,6 +288,45 @@ function pair_time(pos_a, vel_a, pos_b, vel_b, sigma, sigma_sq)
     end
 
     return del_t
+end
+
+
+# Distance between two disks in a 1x1 square with periodic boundary
+# conditions.
+function disk_dist(x, y)
+    d_x = abs(x[0] - y[0]) % 1.0
+    d_x = min(d_x, 1.0 - d_x)
+    d_y = abs(x[1] - y[1]) % 1.0
+    d_y = min(d_y, 1.0 - d_y)
+
+    return  sqrt(d_x^2 + d_y^2)
+end
+
+
+# ====================
+# Plotting
+# ====================
+
+function show_conf(L, sigma, title, fname=None)
+    # pylab.axes()
+    # for [x, y] in L
+    #     for ix in -1:1
+    #         for iy in -1:1
+    #             cir = pylab.Circle((x + ix, y + iy), radius = sigma,  fc = 'r')
+    #             pylab.gca().add_patch(cir)
+    #         end
+    #     end
+    # end
+
+    # pylab.axis('scaled')
+    # pylab.title(title)
+    # pylab.axis([0.0, 1.0, 0.0, 1.0])
+
+    # if fname is not None
+    #     pylab.savefig(fname)
+    # end
+
+    # pylab.show()
 end
 
 end
