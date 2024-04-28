@@ -566,6 +566,15 @@ function test_disk7()
 end
 
 
+# Draw a disk.
+function test_plot1()
+    L = [[0.9, 0.9]]
+    sigma = 0.4
+    # md.show_conf(L, sigma, "test graph", "one_disk.png")
+    show_conf(L, sigma, "test graph", "test_plot1.png")
+end
+
+
 
 function main()
     # ====================
@@ -594,6 +603,12 @@ function main()
     # test_disk5()
     test_disk6()
     # test_disk7()
+
+    # ====================
+    # Plotting
+    # ====================
+
+    # test_plot1()
 
 end
 
