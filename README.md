@@ -34,3 +34,4 @@ Dependencies
 * Plots
 * Printf
 * Random
+* SpecialFunctions
