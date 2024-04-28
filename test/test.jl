@@ -625,6 +625,13 @@ function test_phi1()
 end
 
 
+function test_volume1()
+    for dimension in 1:20
+        println(dimension, ": ", sphere_volume(dimension))
+    end
+end
+
+
 
 function main()
     # ====================
@@ -667,10 +674,23 @@ function main()
     # test_file_io1()
 
     # ====================
-    # Phi tests
+    # Phi
     # ====================
 
-    test_phi1()
+    # test_phi1()
+
+    # ====================
+    # Volume
+    # ====================
+
+    test_volume1()
+    # test_volume2()
+    # test_volume3()
+    # test_volume4()
+    # test_volume5()
+    # test_volume6()
+    # test_volume7()
+    # test_volume8()
 
 end
 

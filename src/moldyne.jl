@@ -7,11 +7,13 @@ using Distributions
 using Plots
 using Printf
 using Random
+using SpecialFunctions
 
 export Structure, Trajectory, set_positions, read_pdb_file, read_xyz_file
 export markov_pi, markov_pi_all_data, markov_pi_all_data2
 export direct_disks_box, direct_disks_box2, markov_disks_box
 export wall_time, pair_time, disk_dist, phi6
+export sphere_volume
 export show_conf
 
 # Molecular structure including atomic positions and pairwise bonds.
@@ -305,6 +307,16 @@ end
 
 function phi6(phi)
     return sum([exp(6.0im * ( phi + (x * pi/3.0))) for x in 1:6]) / 6.0
+end
+
+
+# ====================
+# Sphere Volume
+# ====================
+
+# Volume of N-dimensional sphere.
+function sphere_volume(dimension)
+    return pi^(dimension / 2.0) / gamma(dimension / 2.0 + 1.0)
 end
 
 
