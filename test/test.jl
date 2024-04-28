@@ -508,21 +508,22 @@ function test_disk7()
     n_steps = 1000
     accept = 0
     reject = 0
+    L = []
 
     # Set locations
     if os.path.isfile(filename)
         # from input file
-        f = open(filename, "r")
-        L = []
-        for line in f
-            a, b = line.split()
-            push!(L, [float(a), float(b)])
+        open(filename, "r") do f
+            for line in eachline(f)
+                a, b = line.split()
+                # push!(L, [float(a), float(b)])
+                push!(L, [parse(Float64, a), parse(Float64, b)])
+
+            end
         end
-        f.close()
         println("starting from file ", filename)
     else
         # place on lattice
-        L = []
         for x in 1:k
             for y in 1:k
                 push!(L, [k_offset/2.0 + k_offset*x, k_offset/2.0 + k_offset*y])
@@ -531,11 +532,12 @@ function test_disk7()
         println("starting from scratch")
     end
 
+    uniform_dist = Uniform(-delta, delta)
     for step in 1:n_steps
         println("step ",step)
         a = random.choice(L)
-        b = [(a[0] + random.uniform(-delta, delta)) % 1.0,
-             (a[1] + random.uniform(-delta, delta)) % 1.0]
+        b = [(a[1] + rand(uniform_dist)) % 1.0,
+             (a[2] + rand(uniform_dist)) % 1.0]
         min_dist = minimum(disk_dist(b, c) for c in L if c != a)
         println(" ", min_dist)
         if !(min_dist < 2.0 * sigma)
@@ -553,7 +555,7 @@ function test_disk7()
 
     f = open(filename, "w")
     for a in L
-        f.write(str(a[0]) + " " + str(a[1]) + "\n")
+        f.write(str(a[1]) + " " + str(a[2]) + "\n")
     end
     f.close()
 
@@ -572,6 +574,42 @@ function test_plot1()
     sigma = 0.4
     # md.show_conf(L, sigma, "test graph", "one_disk.png")
     show_conf(L, sigma, "test graph", "test_plot1.png")
+end
+
+
+# Read and print 2D coordinates from an existing file or write 3
+# random 2D coordinates to a new file.
+function test_file_io1()
+    filename = "disk_configuration.txt"
+    L = []
+
+    if os.path.isfile(filename)
+        f = open(filename, "r")
+
+        for line in f
+            a, b = line.split()
+            push!(L, [float(a), float(b)])
+        end
+
+        f.close()
+        println("starting from file ", filename)
+    else
+        uniform_dist = Uniform(0.0, 1.0)
+        for k in 1:3
+            push!(L, [rand(uniform_dist), rand(uniform_dist)])
+        end
+
+        println("starting from scratch")
+    end
+
+    L[1][1] = 3.3
+    f = open(filename, "w")
+
+    for a in L
+        f.write(str(a[1]) + " " + str(a[2]) + "\n")
+    end
+
+    f.close()
 end
 
 
@@ -596,12 +634,12 @@ function main()
     # Disk Placement
     # ====================
 
-    # test_disk1()
+    test_disk1()
     # test_disk2()
     # test_disk3()
     # test_disk4()
     # test_disk5()
-    test_disk6()
+    # test_disk6()
     # test_disk7()
 
     # ====================
@@ -609,6 +647,12 @@ function main()
     # ====================
 
     # test_plot1()
+
+    # ====================
+    # File IO
+    # ====================
+
+    # test_file_io1()
 
 end
 
