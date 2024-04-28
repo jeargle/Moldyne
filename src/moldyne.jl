@@ -11,7 +11,7 @@ using Random
 export Structure, Trajectory, set_positions, read_pdb_file, read_xyz_file
 export markov_pi, markov_pi_all_data, markov_pi_all_data2
 export direct_disks_box, direct_disks_box2, markov_disks_box
-export wall_time, pair_time, disk_dist
+export wall_time, pair_time, disk_dist, phi6
 export show_conf
 
 # Molecular structure including atomic positions and pairwise bonds.
@@ -300,6 +300,11 @@ function disk_dist(x, y)
     d_y = min(d_y, 1.0 - d_y)
 
     return  sqrt(d_x^2 + d_y^2)
+end
+
+
+function phi6(phi)
+    return sum([exp(6.0im * ( phi + (x * pi/3.0))) for x in 1:6]) / 6.0
 end
 
 

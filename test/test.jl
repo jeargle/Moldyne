@@ -613,6 +613,18 @@ function test_file_io1()
 end
 
 
+function test_phi1()
+    a = phi6(0.0)
+    b = phi6(pi/6.0)
+    c = phi6(pi/12.0)
+
+    println(a)
+    println(b)
+    println(c)
+    println(a+b)
+end
+
+
 
 function main()
     # ====================
@@ -634,7 +646,7 @@ function main()
     # Disk Placement
     # ====================
 
-    test_disk1()
+    # test_disk1()
     # test_disk2()
     # test_disk3()
     # test_disk4()
@@ -653,6 +665,12 @@ function main()
     # ====================
 
     # test_file_io1()
+
+    # ====================
+    # Phi tests
+    # ====================
+
+    test_phi1()
 
 end
 
