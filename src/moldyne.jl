@@ -13,7 +13,7 @@ export Structure, Trajectory, set_positions, read_pdb_file, read_xyz_file
 export markov_pi, markov_pi_all_data, markov_pi_all_data2
 export direct_disks_box, direct_disks_box2, markov_disks_box
 export wall_time, pair_time, disk_dist, phi6
-export sphere_volume
+export direct_pi, sphere_volume
 export show_conf
 
 # Molecular structure including atomic positions and pairwise bonds.
@@ -313,6 +313,32 @@ end
 # ====================
 # Sphere Volume
 # ====================
+
+function direct_pi(N, dimension)
+    """
+    Direct randomized calculation of PI.
+    """
+    n_hits = 0
+    uniform_dist = Uniform(-1.0, 1.0)
+
+    for i in 1:N
+        x_len = 0.0
+        for j in 1:dimension
+            x = rand(uniform_dist)
+            x_len += x^2
+            if x_len > 1.0
+                break
+            end
+        end
+
+        if x_len <= 1.0
+            n_hits += 1
+        end
+    end
+
+    return n_hits
+end
+
 
 # Volume of N-dimensional sphere.
 function sphere_volume(dimension)
