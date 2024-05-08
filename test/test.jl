@@ -633,8 +633,6 @@ end
 
 
 function test_volume2()
-    """
-    """
     dimensions = 1:200
     volumes = []
 
@@ -643,15 +641,6 @@ function test_volume2()
         push!(volumes, vol)
         println(dimension, " ", vol)
     end
-
-    # pylab.plot(dimensions, volumes, '.')
-    # # pylab.gca().set_xscale('log')
-    # pylab.gca().set_yscale('log')
-    # pylab.xlabel('d (dimensions)')
-    # pylab.ylabel('volume')
-    # pylab.title('Hypersphere volume (unit radius) in d dimensions')
-    # # pylab.savefig('a2.png')
-    # pylab.show()
 
     p = plot(dimensions,
              volumes,
@@ -665,8 +654,6 @@ end
 
 
 function test_volume3()
-    """
-    """
     n_trials = 1000000
 
     println("---------------------------------------------------------")
@@ -678,8 +665,7 @@ function test_volume3()
         n_hits = direct_pi(n_trials, d)
         est_vol = 2.0^d * n_hits / float(n_trials)
         exact_vol = sphere_volume(d)
-        # println('%2d  %1.4f                    %1.4f              %7d' % (d, est_vol, exact_vol, n_hits))
-        @printf "%2d  %1.4f                    %1.4f              %7d" d est_vol exact_vol n_hits
+        @printf "%2d  %1.4f                    %1.4f              %7d\n" d est_vol exact_vol n_hits
     end
 end
 
@@ -736,8 +722,8 @@ function main()
     # ====================
 
     # test_volume1()
-    test_volume2()
-    # test_volume3()
+    # test_volume2()
+    test_volume3()
     # test_volume4()
     # test_volume5()
     # test_volume6()
