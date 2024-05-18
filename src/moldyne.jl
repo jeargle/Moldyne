@@ -404,7 +404,7 @@ function sample_cylinder_old(n_trials, d)
         # Check that position is within cylinder.
         if sqrt(r_sq_new) < 1.0
             x[k] = x_new_k
-            x[d] = x_supp
+            x[h] = x_supp
             r_sq = r_sq_new + x[h]^2
         end
 
@@ -436,7 +436,7 @@ function sample_cylinder(n_trials, d)
     r_sqC = 0.0
     uniform_dist = Uniform(-1.0, 1.0)
 
-    for i in range(n_trials)
+    for i in 1:n_trials
         # if i%100 == 0:
         #     r_sq2 = sum([j^2 for j in x[:-1]])
         #     print('|%f - %f| = %f' % (r_sq, r_sq2, abs(r_sq-r_sq2)))

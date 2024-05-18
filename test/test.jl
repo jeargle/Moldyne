@@ -699,11 +699,13 @@ end
 # dimensionalities compared to sphere volume of
 # dimension+1/dimension.
 function test_volume5()
+    # n_trials = 1000000
     n_trials = 100000
 
     # println 2.0**d * n_hits / float(n_trials)
 
     for dim in 1:10
+    # for dim in [200]
         # println sum(r_sqs)
         # println n_trials
         n_hits = sample_cylinder_old(n_trials, dim)
@@ -720,6 +722,39 @@ function test_volume5()
     # # pylab.savefig("a2.png")
     # pylab.show()
 end
+
+
+# Markov chain sampling of cylinder volume for different
+# dimensionalities compared to sphere volume of
+# dimension+1/dimension.
+#
+# Like volume_test5(), but with minor tweak to sample_cylinder().
+#
+# using sample_cylinder_old():
+#     d: 200, 2*<Q> = 0.177938, Vol1_s(201)/Vol1_s(200) = 0.176584
+#     real	1m39.104s
+#     user	1m36.139s
+#     sys	0m0.744s
+# using sample_cylinder():
+#     d: 200, 2*<Q> = 0.180696, Vol1_s(201)/Vol1_s(200) = 0.176584
+#     real	0m14.283s
+#     user	0m13.362s
+#     sys	0m0.413s
+function test_volume6()
+    # n_trials = 1000000
+    n_trials = 100000
+
+    for dim in [200]
+        # n_Q = md.sample_cylinder_old(n_trials, dim)
+        n_hits = sample_cylinder(n_trials, dim)
+        vol_frac = sphere_volume(dim+1)/sphere_volume(dim)
+        @printf "d: %d, 2*<Q> = %f, sphere_volume(%d)/sphere_volume(%d) = %f\n" dim 2.0*n_hits/n_trials dim+1 dim vol_frac
+        # print('d: %d, 2*<Q> = %f, Vol1_s(%d)/Vol1_s(%d) = %f' %
+        #       (dim, 2.0*n_Q/n_trials, dim+1, dim,
+        #        sphere_volume(dim+1)/sphere_volume(dim)))
+    end
+end
+
 
 
 function main()
