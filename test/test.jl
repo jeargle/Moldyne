@@ -695,6 +695,33 @@ function test_volume4()
 end
 
 
+# Markov chain sampling of cylinder volume for different
+# dimensionalities compared to sphere volume of
+# dimension+1/dimension.
+function test_volume5()
+    n_trials = 100000
+
+    # println 2.0**d * n_hits / float(n_trials)
+
+    for dim in 1:10
+        # println sum(r_sqs)
+        # println n_trials
+        n_hits = sample_cylinder_old(n_trials, dim)
+        # Q: n_hits
+        vol_frac = sphere_volume(dim+1)/sphere_volume(dim)
+        @printf "d: %d, 2*<Q> = %f, sphere_volume(%d)/sphere_volume(%d) = %f\n" dim 2.0*n_hits/n_trials dim+1 dim vol_frac
+    end
+
+    # pylab.plot([i[0] for i in points], [i[1] for i in points], ".")
+    # pylab.axis([-1.5, 1.5, -1.5, 1.5])
+    # pylab.xlabel("x")
+    # pylab.ylabel("y")
+    # pylab.title("Markov chain")
+    # # pylab.savefig("a2.png")
+    # pylab.show()
+end
+
+
 function main()
     # ====================
     # Structure
@@ -748,8 +775,8 @@ function main()
     # test_volume1()
     # test_volume2()
     # test_volume3()
-    test_volume4()
-    # test_volume5()
+    # test_volume4()
+    test_volume5()
     # test_volume6()
     # test_volume7()
     # test_volume8()

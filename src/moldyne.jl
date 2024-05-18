@@ -13,7 +13,7 @@ export Structure, Trajectory, set_positions, read_pdb_file, read_xyz_file
 export markov_pi, markov_pi_all_data, markov_pi_all_data2
 export direct_disks_box, direct_disks_box2, markov_disks_box
 export wall_time, pair_time, disk_dist, phi6
-export direct_pi, sphere_volume, sample_sphere
+export direct_pi, sphere_volume, sample_sphere, sample_cylinder_old, sample_cylinder
 export show_conf
 
 # Molecular structure including atomic positions and pairwise bonds.
@@ -375,6 +375,91 @@ function sample_sphere(n_trials, d)
     end
 
     return r_sqs
+end
+
+
+# Markov sampling of sphere within a cylinder.  Moves are accepted
+# if they lie within the cylinder and counted towards the sphere
+# volume calculation if they also lie within the sphere.  Dimension
+# d represents cylinder height.
+# n_trials : number of Markov trials
+# d : dimension of hypercylinder
+function sample_cylinder_old(n_trials, d)
+    # x = [0] * (d+1)
+    h = d+1
+    x = zeros(h)
+    n_hits = 0
+    # r_sqs = []
+    uniform_dist = Uniform(-1.0, 1.0)
+
+    for i in 1:n_trials
+        r_sq = sum([j^2 for j in x])
+        k = rand(1:d)
+        x_new_k = x[k] + rand(uniform_dist)
+        x_supp = rand(uniform_dist)
+        # Sum of squares including x_new_k but not x[h], the height
+        # dimension.
+        r_sq_new = r_sq - x[k]^2 + x_new_k^2 - x[h]^2
+        # println(r_sq_new)
+        # Check that position is within cylinder.
+        if sqrt(r_sq_new) < 1.0
+            x[k] = x_new_k
+            x[d] = x_supp
+            r_sq = r_sq_new + x[h]^2
+        end
+
+        # Check that cylinder position is within sphere.
+        if r_sq < 1.0
+            n_hits += 1
+        end
+        # r_sqs.append(r_sq)
+        # points.append(x[:])
+    end
+
+    return n_hits
+end
+
+
+# Markov sampling of sphere within a cylinder.  Moves are accepted
+# if they lie within the cylinder and counted towards the sphere
+# volume calculation if they also lie within the sphere.  Dimension
+# d represents cylinder height.
+# n_trials : number of Markov trials
+# d : dimension of hypercylinder
+function sample_cylinder(n_trials, d)
+    # x = [0] * (d+1)
+    h = d+1
+    x = zeros(h)
+    n_hits = 0
+    r_sq = 0.0
+    r_sq_new = 0.0
+    r_sqC = 0.0
+    uniform_dist = Uniform(-1.0, 1.0)
+
+    for i in range(n_trials)
+        # if i%100 == 0:
+        #     r_sq2 = sum([j^2 for j in x[:-1]])
+        #     print('|%f - %f| = %f' % (r_sq, r_sq2, abs(r_sq-r_sq2)))
+        k = rand(1:d)
+        x_new_k = x[k] + rand(uniform_dist)
+        x_supp = rand(uniform_dist)
+
+        # Sum of squares including x_new_k
+        r_sq_new = r_sq - x[k]^2 + x_new_k^2
+        if sqrt(r_sq_new) < 1.0
+            x[k] = x_new_k
+            x[h] = x_supp
+            r_sq = r_sq_new
+        end
+
+        # Sum of squares including the cylinder x_supp term
+        r_sqC = r_sq + x[h]^2
+        if r_sqC < 1.0
+            n_hits += 1
+        end
+    end
+
+    return n_hits
 end
 
 
