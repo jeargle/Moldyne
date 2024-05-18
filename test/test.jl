@@ -670,6 +670,30 @@ function test_volume3()
 end
 
 
+# Markov chain sampling of sphere volume for different
+# dimensionalities.
+function test_volume4()
+    n_trials = 10000
+
+    # print 2.0**d * n_hits / float(n_trials)
+    println("Average distance from origin to sample")
+
+    for dim in 1:10
+        # print sum(r_sqs)
+        # print n_trials
+        r_sqs = sample_sphere(n_trials, dim)
+        println("  ", dim, " ", sum(r_sqs)/n_trials)
+    end
+
+    # pylab.plot([i[0] for i in points], [i[1] for i in points], ".")
+    # pylab.axis([-1.5, 1.5, -1.5, 1.5])
+    # pylab.xlabel("x")
+    # pylab.ylabel("y")
+    # pylab.title("Markov chain")
+    # # # pylab.savefig("a2.png")
+    # pylab.show()
+end
+
 
 function main()
     # ====================
@@ -723,8 +747,8 @@ function main()
 
     # test_volume1()
     # test_volume2()
-    test_volume3()
-    # test_volume4()
+    # test_volume3()
+    test_volume4()
     # test_volume5()
     # test_volume6()
     # test_volume7()

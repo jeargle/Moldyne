@@ -13,7 +13,7 @@ export Structure, Trajectory, set_positions, read_pdb_file, read_xyz_file
 export markov_pi, markov_pi_all_data, markov_pi_all_data2
 export direct_disks_box, direct_disks_box2, markov_disks_box
 export wall_time, pair_time, disk_dist, phi6
-export direct_pi, sphere_volume
+export direct_pi, sphere_volume, sample_sphere
 export show_conf
 
 # Molecular structure including atomic positions and pairwise bonds.
@@ -343,6 +343,38 @@ end
 # Volume of N-dimensional sphere.
 function sphere_volume(dimension)
     return pi^(dimension / 2.0) / gamma(dimension / 2.0 + 1.0)
+end
+
+# Markov chain sampling of sphere volume.
+# Each trial adjusts value of one dimension chosen at random.
+# n_trials : number of trials
+# d: sphere dimension
+function sample_sphere(n_trials, d)
+    # x = [0] * d
+    x = zeros(d)
+    r_sqs = []
+    uniform_dist = Uniform(-1.0, 1.0)
+
+    for i in 1:n_trials
+        r_sq = sum([j^2 for j in x])
+        k = rand(1:d)
+        x_new_k = x[k] + rand(uniform_dist)
+        # Sum of squares including x_new_k
+        r_sq_new = r_sq - x[k]^2 + x_new_k^2
+
+        # Accept move if point is within unit sphere.
+        # sqrt not needed since radius bound is 1.0
+        if r_sq_new < 1.0
+            x[k] = x_new_k
+            push!(r_sqs, r_sq_new)
+            # n_hits += 1
+        else
+            push!(r_sqs, r_sq)
+        end
+        # points.append(x[:])
+    end
+
+    return r_sqs
 end
 
 
